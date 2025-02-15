@@ -4,6 +4,9 @@ using UnityEngine;
 public class PlayerInventory : MonoBehaviour
 {
     private string _name;
+    private int _multiplyOrderInLayer;
+    private int _currentOrderInLayer = 1;
+
     private SpriteRenderer _spriteCharacterHead;
     private SpriteRenderer _spriteCharacterBody;
     private SpriteRenderer _spriteCharacterEyes;
@@ -17,18 +20,21 @@ public class PlayerInventory : MonoBehaviour
     private SpriteRenderer _spriteGlasses;
     private SpriteRenderer _spriteHat;
     private SpriteRenderer _spriteKey;
+
     private GameKey _gameKey;
+    private List<SpriteRenderer> _allSpriteRenderers;
 
     public GameKey GameKey => _gameKey;
     public string Name => _name;
 
-    public void SetValue(string name, List<Item> items, SpriteRenderer spriteCharacterBody, SpriteRenderer spriteCharacterHead,
+    public void SetValue(string name, int multiplyOrderInLayer, List<Item> items, SpriteRenderer spriteCharacterBody, SpriteRenderer spriteCharacterHead,
                          SpriteRenderer spriteCharacterEyes, SpriteRenderer spriteCharacterArmLeft,
                          SpriteRenderer spriteCharacterArmRight, SpriteRenderer spriteCharacterLegLeft,
                          SpriteRenderer spriteCharacterLegRight, SpriteRenderer spriteTop, SpriteRenderer spriteTopArmLeft,
                          SpriteRenderer spriteTopArmRight, SpriteRenderer spriteGlasses, SpriteRenderer spriteHat, SpriteRenderer spriteKey)
     {
         _name = name;
+        _multiplyOrderInLayer = multiplyOrderInLayer;
         _spriteCharacterHead = spriteCharacterHead;
         _spriteCharacterBody = spriteCharacterBody;
         _spriteCharacterEyes = spriteCharacterEyes;
@@ -43,8 +49,14 @@ public class PlayerInventory : MonoBehaviour
         _spriteHat = spriteHat;
         _spriteKey = spriteKey;
 
+        _allSpriteRenderers = new List<SpriteRenderer>() { _spriteCharacterHead, _spriteCharacterBody, _spriteCharacterEyes, _spriteCharacterArmLeft,
+                                                           _spriteCharacterArmRight, _spriteCharacterLegLeft, _spriteCharacterLegRight, _spriteTop,
+                                                           _spriteTopArmLeft, _spriteTopArmRight, _spriteGlasses, _spriteHat, _spriteKey};
+
         for (int i = 0; i < items.Count; i++) { ChangeCharacterItem(items[i]); }
     }
+
+    #region ----- Action Sprites -----
 
     public void ChangeCharacterItem(Item item)
     {
@@ -86,6 +98,31 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    public void ResetOrderInLayer()
+    {
+        for (int i = 0; i < _allSpriteRenderers.Count; i++)
+        {
+            _allSpriteRenderers[i].sortingOrder -= _currentOrderInLayer * _multiplyOrderInLayer;
+        }
+    }
+
+    public void OnChangedLine(int orderInLayer)
+    {
+        if (_allSpriteRenderers[0].sortingOrder >= _multiplyOrderInLayer)
+            ResetOrderInLayer();
+
+        _currentOrderInLayer = orderInLayer;
+
+        for (int i = 0; i < _allSpriteRenderers.Count; i++)
+        {
+            _allSpriteRenderers[i].sortingOrder += _currentOrderInLayer * _multiplyOrderInLayer;
+        }
+    }
+
+    #endregion
+
+    #region ----- Keys Action -----
+
     public void SetKey(GameKey gameKey)
     {
         _gameKey = gameKey;
@@ -95,25 +132,19 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CheckLock(Lock locked)
     {
-        Debug.Log(locked.Key + " " + _gameKey.Key);
-        if (locked.Key == _gameKey.Key)
-        {
-            
-            ResetKey();
+        if (_gameKey != null && locked.Key == _gameKey.Key)
             return true;
-        }
         else
-        {
             return false;
-        }
     }
 
     public void ResetKey()
     {
         _gameKey = null;
         _spriteKey.gameObject.SetActive(false);
-
     }
+
+    #endregion
 
     public void ChangeName(string name) => _name = name;
 }

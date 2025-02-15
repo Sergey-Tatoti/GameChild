@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 36542
   _type: 2
-  _spriteItem: {fileID: 21300000, guid: a7f37280a8794694a8add109c21c6f22, type: 3}
+  _spriteItem: {fileID: 21300000, guid: 3e8b96ddca89a0448aa92d802b6cc61a, type: 3}
   _spriteTop: {fileID: 0}
   _spriteTopArm: {fileID: 0}
   _spriteHead: {fileID: 0}

@@ -9,9 +9,13 @@ public class PlayerTouchTracker : MonoBehaviour
     public event UnityAction<Vector3> TouchedTeleport;
     public event UnityAction<GameKey> TouchedKey;
     public event UnityAction<Lock> TouchedLock;
+    public event UnityAction<int> ChangedLine;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.TryGetComponent<TilemapLine>(out TilemapLine tilemapLine))
+            ChangedLine?.Invoke(tilemapLine.OrderInLayer);
+
         if (collision.gameObject.GetComponent<HitBox>())
             TouchedHitBox?.Invoke();
 

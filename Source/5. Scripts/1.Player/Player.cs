@@ -9,6 +9,8 @@ using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
+    public static int MultiplyOrderInLayer = 100; // ћножитель дл€ сло€ персонажа относительно тайлов
+
     [Header("Ёлементы персонажа")]
     [SerializeField] private SpriteRenderer _spriteCharacterHead;
     [SerializeField] private SpriteRenderer _spriteCharacterBody;
@@ -54,6 +56,7 @@ public class Player : MonoBehaviour
         _playerMove.ChangedTargetMove -= OnChangedTargetMove;
         _playerTouchTracker.TouchedKey -= OnTouchedKey;
         _playerTouchTracker.TouchedLock -= OnTouchedLock;
+        _playerTouchTracker.ChangedLine -= _playerInventory.OnChangedLine;
     }
 
     public void SetValue(string name, List<Item> items)
@@ -63,7 +66,7 @@ public class Player : MonoBehaviour
         _playerInventory = GetComponent<PlayerInventory>();
         _animator = _character.GetComponent<Animator>();
 
-        _playerInventory.SetValue(name, items,  _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes, 
+        _playerInventory.SetValue(name, MultiplyOrderInLayer, items, _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes, 
                                   _spriteCharacterArmLeft, _spriteCharacterArmRight, _spriteCharacterLegLeft,
                                   _spriteCharacterLegRight, _spriteTop, _spriteTopArmLeft, _spriteTopArmRight,
                                   _spriteGlasses, _spriteHat, _keySprite);
@@ -76,6 +79,7 @@ public class Player : MonoBehaviour
         _playerTouchTracker.TouchedTeleport += OnTouchedTeleport;
         _playerTouchTracker.TouchedKey += OnTouchedKey;
         _playerTouchTracker.TouchedLock += OnTouchedLock;
+        _playerTouchTracker.ChangedLine += _playerInventory.OnChangedLine;
     }
 
     #region ----- ActionsInLevel -----
@@ -127,6 +131,7 @@ public class Player : MonoBehaviour
     {
         StopCoroutine(_coroutineMove);
         _animator.SetBool("isRun", false);
+        _playerInventory.ResetKey();
         TouchedStarLevel?.Invoke();
     }
 

@@ -25,7 +25,6 @@ public class Avatar : MonoBehaviour
 
     public void ChangeSpriteItem(Item item)
     {
-        Debug.Log(item);
         switch (item.TypeItem)
         {
             case ItemInfo.Type.Character:
