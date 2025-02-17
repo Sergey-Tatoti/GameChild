@@ -12,6 +12,7 @@ public class LevelsManager : MonoBehaviour
 
     public event UnityAction<float, float, Vector3, bool> ActivatedLevel;
 
+    public void SetLoadingValue(int numberLevel) => SetCurrentLevel(numberLevel);
     public void UpdateLevel() => _currentLevel.UpdateLevel();
 
     #region ----- Activate Level -----

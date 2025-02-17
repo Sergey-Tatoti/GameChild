@@ -26,6 +26,8 @@ public class ButtonAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _startScale = transform.localScale;
     }
 
+    public void ResetAnimation() => DOTween.Kill(this);
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (_canChangeScale) { transform.DOScale(_startScale, _durationChangeScale); }

@@ -6,18 +6,9 @@ public class RewardScale : MonoBehaviour
 {
     [SerializeField] private Image _imageReward;
 
-    private int _maxValue = 1;
-
     public void ChangeScale(int experience, float _durationChangeScale)
     {
-        bool isMaxFilled = false;
-        float value = experience * 0.01f;
-
-        if (value >= _maxValue)
-        {
-            value = _maxValue;
-            isMaxFilled = true;
-        }
+        float value = Mathf.Clamp01(experience * 0.01f);
 
         _imageReward.DOFillAmount(value, _durationChangeScale);
     }

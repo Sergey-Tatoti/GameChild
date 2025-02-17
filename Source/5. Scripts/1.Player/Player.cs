@@ -30,8 +30,6 @@ public class Player : MonoBehaviour
     [Tooltip("Продолжительность движения персонажа от блока к блоку")][SerializeField] private float _durationMove;
     [SerializeField] private SpriteRenderer _keySprite;
 
-
-
     private Vector3 _startPosition;
     private Coroutine _coroutineMove;
     private Animator _animator;
