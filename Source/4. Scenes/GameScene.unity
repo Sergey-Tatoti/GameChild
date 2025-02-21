@@ -55616,7 +55616,7 @@ MonoBehaviour:
   _endPositionX: -15
   _minYPositionClouds: 4.3
   _maxYPositionClouds: -4.3
-  _minCountClouds: 0
+  _minCountClouds: 1
   _maxCountClouds: 4
   _minDurationMoveClouds: 10
   _maxDurationMoveClouds: 30
@@ -74036,7 +74036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &700717420755381556
 MonoBehaviour:
   m_ObjectHideFlags: 0
