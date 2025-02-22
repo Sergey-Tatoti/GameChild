@@ -57,19 +57,10 @@ public class ShopManagerUI : MonoBehaviour
         FillListShopCards(items, shopCardView);
     }
 
-    #region ----- ChangeAvatars -----
-
     public void ChangeSpriteItem(Item item)
     {
         for (int i = 0; i < _avatars.Count; i++) { _avatars[i].ChangeSpriteItem(item); }
     }
-
-    public void ChangeName(string name)
-    {
-        for (int i = 0; i < _avatars.Count; i++) { _avatars[i].ChangeName(name); }
-    }
-
-    #endregion
 
     #region ----- ActionsShopCards -----
 

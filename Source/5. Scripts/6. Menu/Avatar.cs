@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class Avatar : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _textName;
     [SerializeField] private Image _imageMarkNewItem;
     [Header("Ёлементы персонажа")]
     [SerializeField] private Image _imageCharacterHead;
@@ -67,8 +66,6 @@ public class Avatar : MonoBehaviour
                 break;
         }
     }
-
-    public void ChangeName(string name) => _textName.text = name;
 
     public void ShowMarkNewitem(bool isShow)
     {

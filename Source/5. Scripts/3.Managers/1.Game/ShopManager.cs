@@ -6,7 +6,6 @@ using UnityEngine.Events;
 public class ShopManager : MonoBehaviour
 {
     [SerializeField] private ShopManagerUI _shopManagerUI;
-    [SerializeField] private NameManager _nameManager;
     [SerializeField] private ShopCardView _shopCardViewPrefab;
 
     private List<int> _idSelectedItems = new List<int>();
@@ -19,22 +18,18 @@ public class ShopManager : MonoBehaviour
     private void OnEnable()
     {
         _shopManagerUI.ChangedSelectedItem += OnChangedSelectedItem;
-        _nameManager.ChangedName += OnChangedName;
     }
 
     private void OnDisable()
     {
         _shopManagerUI.ChangedSelectedItem -= OnChangedSelectedItem;
-        _nameManager.ChangedName -= OnChangedName;
     }
 
-    public void SetValue(List<Item> items, string name)
+    public void SetValue(List<Item> items)
     {
         _items = items;
 
         _shopManagerUI.SetValue(items, _shopCardViewPrefab);
-        _nameManager.SetValue();
-        _shopManagerUI.ChangeName(name);
 
         SetSelectedItems(items);
         _shopManagerUI.UpdateShopCards(_items);
@@ -46,8 +41,6 @@ public class ShopManager : MonoBehaviour
 
         _shopManagerUI.UpdateShopCards(_items);
     }
-
-    private void OnChangedName(string name) { _shopManagerUI.ChangeName(name); ChangedName?.Invoke(name); }
 
     #region ----- SelectedItems -----
 

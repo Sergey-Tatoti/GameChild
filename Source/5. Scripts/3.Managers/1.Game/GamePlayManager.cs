@@ -29,7 +29,6 @@ public class GamePlayManager : MonoBehaviour
         _player.ChangedPosition += OnChangedPosition;
 
         _levelManager.ActivatedLevel += OnActivatedLevel;
-        _shopManager.ChangedName += OnChangedName;
         _shopManager.ChangedCharacter += _player.OnChangedCharacter;
         _shopManager.ChangedIdSelectedItems += OnChangedIdSelectedItems;
     }
@@ -48,21 +47,20 @@ public class GamePlayManager : MonoBehaviour
         _player.ChangedPosition -= OnChangedPosition;
 
         _levelManager.ActivatedLevel -= OnActivatedLevel;
-        _shopManager.ChangedName -= OnChangedName;
         _shopManager.ChangedCharacter -= _player.OnChangedCharacter;
         _shopManager.ChangedIdSelectedItems -= OnChangedIdSelectedItems;
     }
 
     private void Start() => _saveGame.LoadAll(this);
 
-    public void SetLoadingValues(string name, int experience, int numberLevel, List<int> openedIdItems,
+    public void SetLoadingValues(int experience, int numberLevel, List<int> openedIdItems,
                                  List<int> selectedIdItems, List<int> showedIdItems)
     {
         SetInfoItemsById(openedIdItems, selectedIdItems, showedIdItems);
 
         _player.SetValue(name, GetItemsById(selectedIdItems));
         _levelManager.SetLoadingValue(numberLevel, experience);
-        _shopManager.SetValue(_allItems, name);
+        _shopManager.SetValue(_allItems);
         _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience, _countReward);
         _soundManager.PlaySound(SoundManager.TypeSound.GameMusic);
         _cloudsManager.StartMoveClouds();
@@ -112,8 +110,6 @@ public class GamePlayManager : MonoBehaviour
         _saveGame.SaveIdSelectedItems(idSelectedItems);
         _soundManager.PlaySound(SoundManager.TypeSound.ChangeClothes);
     }
-
-    private void OnChangedName(string name) { _player.ChangeName(name); _saveGame.SaveName(name); }
 
     private void OnChangedPosition() => _soundManager.PlaySound(SoundManager.TypeSound.Step);
 
