@@ -10,17 +10,17 @@ public class GamePlayManager : MonoBehaviour
     [SerializeField] private CloudsManager _cloudsManager;
     [SerializeField] private Player _player;
     [SerializeField] private SaveGame _saveGame;
-    [SerializeField] private List<Item> _allItems;
+    [SerializeField] public List<Item> _allItems;
 
     private int _countReward = 3;
     private int _maxExperience = 100;
-    private int _experience;
 
     private void OnEnable()
     {
         _gamePlayManagerUI.CannedMovePlayer += OnCannedMovePlayer;
         _gamePlayManagerUI.CannedShowNextLevel += OnCannedShowNextLevel;
         _gamePlayManagerUI.ChoisenCardReward += OnChoisenCardRewardView;
+        _gamePlayManagerUI.CompletedLevel += OnCompletedLevel;
 
         _player.TouchedHitBox += OnTouchedHitBox;
         _player.TouchedStarLevel += OnTouchedStarLevel;
@@ -39,6 +39,7 @@ public class GamePlayManager : MonoBehaviour
         _gamePlayManagerUI.CannedMovePlayer -= OnCannedMovePlayer;
         _gamePlayManagerUI.CannedShowNextLevel -= OnCannedShowNextLevel;
         _gamePlayManagerUI.ChoisenCardReward -= OnChoisenCardRewardView;
+        _gamePlayManagerUI.CompletedLevel -= OnCompletedLevel;
 
         _player.TouchedHitBox -= OnTouchedHitBox;
         _player.TouchedStarLevel -= OnTouchedStarLevel;
@@ -57,13 +58,12 @@ public class GamePlayManager : MonoBehaviour
     public void SetLoadingValues(string name, int experience, int numberLevel, List<int> openedIdItems,
                                  List<int> selectedIdItems, List<int> showedIdItems)
     {
-        _experience = experience;
         SetInfoItemsById(openedIdItems, selectedIdItems, showedIdItems);
 
         _player.SetValue(name, GetItemsById(selectedIdItems));
-        _levelManager.SetLoadingValue(numberLevel);
+        _levelManager.SetLoadingValue(numberLevel, experience);
         _shopManager.SetValue(_allItems, name);
-        _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _experience, _countReward);
+        _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience, _countReward);
         _soundManager.PlaySound(SoundManager.TypeSound.GameMusic);
         _cloudsManager.StartMoveClouds();
         _levelManager.ActivateLevel(numberLevel);
@@ -71,23 +71,29 @@ public class GamePlayManager : MonoBehaviour
 
     #region ----- ActionGame -----
 
+    private void OnCompletedLevel()
+    {
+        _levelManager.ChangeNextLevel();
+        _saveGame.SaveExperience(_levelManager.Experience, _levelManager.CurrentLevel.Number);
+    }
+
     private void OnActivatedLevel(float stepHorizontal, float stepVertical, Vector3 startPosition, bool isRightDirection)
     {
-        _saveGame.SaveExperience(_experience, _levelManager.CurrentLevel.Number);
         _player.OnActivatedLevel(stepHorizontal, stepVertical, startPosition, isRightDirection);
         _gamePlayManagerUI.StartLevel(_levelManager.CurrentLevel.Number);
     }
 
     private void ChangeExperience(int experience)
     {
-        _experience += experience;
-        _gamePlayManagerUI.ChangeExperience(_experience);
+        _levelManager.ChangeExperience(experience);
+        _gamePlayManagerUI.ChangeExperience(_levelManager.Experience);
     }
 
     private void OnChoisenCardRewardView(Item item)
     {
+        _levelManager.SetExperience(0);
+        _gamePlayManagerUI.ChangeExperience(_levelManager.Experience);
         _shopManager.TakedItem(GetSelectedItemByType(item.TypeItem), item);
-        _saveGame.SaveExperience(0, _levelManager.CurrentLevel.Number);
         _saveGame.SaveIdOpenedItem(item.Id);
     }
 
@@ -126,7 +132,7 @@ public class GamePlayManager : MonoBehaviour
     {
         ChangeExperience(_levelManager.CurrentLevel.CountExperience);
 
-        _gamePlayManagerUI.EndLevel(_experience >= _maxExperience);
+        _gamePlayManagerUI.EndLevel(_levelManager.Experience >= _maxExperience);
         _soundManager.PlaySound(SoundManager.TypeSound.WinLevel);
     }
 

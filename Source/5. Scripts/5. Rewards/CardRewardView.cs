@@ -9,9 +9,9 @@ public class CardRewardView : MonoBehaviour
     [SerializeField] private Image _cardOpenImage;
     [SerializeField] private Image _cardRewardImage;
 
-    private Item _itme;
+    private Item _item;
 
-    public Item Item => _itme;
+    public Item Item => _item;
 
     public event UnityAction<CardRewardView> ClickedButtonCard;
 
@@ -21,8 +21,8 @@ public class CardRewardView : MonoBehaviour
 
     public void SetValue(Item itme)
     {
-        _itme = itme;
-        _cardRewardImage.sprite = _itme.SpriteItem;
+        _item = itme;
+        _cardRewardImage.sprite = _item.SpriteItem;
     }
 
     public void BlockButton(bool isBlock)

@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -43,6 +44,7 @@ public class ShopCardView : MonoBehaviour
     public void OpenCard(bool isOpen)
     {
         _imageMarkNewItem.gameObject.SetActive(!_item.IsShower && isOpen);
+        _imageMarkNewItem.GetComponent<ButtonAnimation>().SetShining(!_item.IsShower && isOpen);
         _imageItemCard.gameObject.SetActive(isOpen);
         _imageBackCard.sprite = isOpen ? _openSprite : _closeSprite;
         _buttonCard.interactable = isOpen;
@@ -68,6 +70,7 @@ public class ShopCardView : MonoBehaviour
         if (!_isSelect)
         {
             _imageMarkNewItem.gameObject.SetActive(false);
+            _imageMarkNewItem.GetComponent<ButtonAnimation>().SetShining(false);
 
             ChangeSelect(!_isSelect);
 

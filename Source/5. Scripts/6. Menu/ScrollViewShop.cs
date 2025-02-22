@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class ScrollViewShop : MonoBehaviour
 {
@@ -37,8 +38,6 @@ public class ScrollViewShop : MonoBehaviour
 
         shopCardView.SetValue(item, _spriteCloseCard);
 
-        ShowMarkNewItem(!item.IsShower);
-
         return shopCardView;
     }
 
@@ -56,7 +55,11 @@ public class ScrollViewShop : MonoBehaviour
         ShowMarkNewItem(false);
     }
 
-    private void ShowMarkNewItem(bool isShow) => _imageMarkNewItem.gameObject.SetActive(isShow);
+    private void ShowMarkNewItem(bool isShow)
+    {
+        _imageMarkNewItem.gameObject.SetActive(isShow);
+        _imageMarkNewItem.GetComponent<ButtonAnimation>().SetShining(isShow);
+    }
 
     private void OnClicedButtonArrow(bool isDown)
     {

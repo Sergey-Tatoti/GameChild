@@ -14,6 +14,7 @@ public class PlayerInventory : MonoBehaviour
     private SpriteRenderer _spriteCharacterArmRight;
     private SpriteRenderer _spriteCharacterLegLeft;
     private SpriteRenderer _spriteCharacterLegRight;
+    private SpriteRenderer _spriteShadow;
     private SpriteRenderer _spriteTop;
     private SpriteRenderer _spriteTopArmLeft;
     private SpriteRenderer _spriteTopArmRight;
@@ -29,8 +30,8 @@ public class PlayerInventory : MonoBehaviour
 
     public void SetValue(string name, int multiplyOrderInLayer, List<Item> items, SpriteRenderer spriteCharacterBody, SpriteRenderer spriteCharacterHead,
                          SpriteRenderer spriteCharacterEyes, SpriteRenderer spriteCharacterArmLeft,
-                         SpriteRenderer spriteCharacterArmRight, SpriteRenderer spriteCharacterLegLeft,
-                         SpriteRenderer spriteCharacterLegRight, SpriteRenderer spriteTop, SpriteRenderer spriteTopArmLeft,
+                         SpriteRenderer spriteCharacterArmRight, SpriteRenderer spriteCharacterLegLeft, SpriteRenderer spriteCharacterLegRight,
+                         SpriteRenderer spriteShadow, SpriteRenderer spriteTop, SpriteRenderer spriteTopArmLeft,
                          SpriteRenderer spriteTopArmRight, SpriteRenderer spriteGlasses, SpriteRenderer spriteHat, SpriteRenderer spriteKey)
     {
         _name = name;
@@ -42,6 +43,7 @@ public class PlayerInventory : MonoBehaviour
         _spriteCharacterArmRight = spriteCharacterArmRight;
         _spriteCharacterLegLeft = spriteCharacterLegLeft;
         _spriteCharacterLegRight = spriteCharacterLegRight;
+        _spriteShadow = spriteShadow;
         _spriteTop = spriteTop;
         _spriteTopArmLeft = spriteTopArmLeft;
         _spriteTopArmRight = spriteTopArmRight;
@@ -49,9 +51,12 @@ public class PlayerInventory : MonoBehaviour
         _spriteHat = spriteHat;
         _spriteKey = spriteKey;
 
-        _allSpriteRenderers = new List<SpriteRenderer>() { _spriteCharacterHead, _spriteCharacterBody, _spriteCharacterEyes, _spriteCharacterArmLeft,
-                                                           _spriteCharacterArmRight, _spriteCharacterLegLeft, _spriteCharacterLegRight, _spriteTop,
-                                                           _spriteTopArmLeft, _spriteTopArmRight, _spriteGlasses, _spriteHat, _spriteKey};
+        _allSpriteRenderers = new List<SpriteRenderer>()
+        {
+           _spriteCharacterHead, _spriteCharacterBody, _spriteCharacterEyes, _spriteCharacterArmLeft,
+           _spriteCharacterArmRight, _spriteCharacterLegLeft, _spriteCharacterLegRight, _spriteShadow,
+           _spriteTop, _spriteTopArmLeft, _spriteTopArmRight, _spriteGlasses, _spriteHat, _spriteKey
+        };
 
         for (int i = 0; i < items.Count; i++) { ChangeCharacterItem(items[i]); }
     }

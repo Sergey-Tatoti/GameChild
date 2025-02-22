@@ -50,7 +50,7 @@ public class ButtonAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (shining)
         {
-            transform.localScale = _startScale;
+            transform.localScale = _scaleSmall;
             transform.DOScale(_scaleBig, _durationShine).SetLoops(-1, LoopType.Yoyo);
         }
         else if (!shining)

@@ -4,23 +4,39 @@ using UnityEngine.Events;
 
 public class LevelsManager : MonoBehaviour
 {
-    [SerializeField] private List<Level> _levels;
+    [SerializeField] public List<Level> _levels;
 
+    private Level _lastLevel;
     private Level _currentLevel;
 
+    private int _experience;
+
     public Level CurrentLevel => _currentLevel;
+    public int Experience => _experience;
 
     public event UnityAction<float, float, Vector3, bool> ActivatedLevel;
 
-    public void SetLoadingValue(int numberLevel) => SetCurrentLevel(numberLevel);
+    public void SetLoadingValue(int numberLevel, int experience)
+    {
+        _experience = experience;
+        _currentLevel = GetLevelByNumberLevel(numberLevel);
+    }
+
     public void UpdateLevel() => _currentLevel.UpdateLevel();
 
+    public void ChangeExperience(int experience) => _experience += experience;
+    public void SetExperience(int experience) => _experience = experience;
+
+    public void ChangeNextLevel() => _currentLevel = GetLevelByNumberLevel(_currentLevel.Number + 1);
+
     #region ----- Activate Level -----
+
     public void ActivateLevel(int numberLevel)
     {
         TryDeactivateLastLevel();
-        SetCurrentLevel(numberLevel);
 
+        _lastLevel = _currentLevel;
+        _currentLevel.UpdateLevel();
         _currentLevel.gameObject.SetActive(true);
 
         ActivatedLevel?.Invoke(_currentLevel.PlayerStepHorizontal, _currentLevel.PlayerStepVertical,
@@ -29,21 +45,23 @@ public class LevelsManager : MonoBehaviour
 
     private void TryDeactivateLastLevel()
     {
-        if (_currentLevel != null)
+        if (_lastLevel != null)
         {
-            _currentLevel.gameObject.SetActive(false);
-            _currentLevel.UpdateLevel();
+            _lastLevel.gameObject.SetActive(false);
+            _lastLevel.UpdateLevel();
         }
     }
 
-    private void SetCurrentLevel(int numberLevel)
-    {
-        if (numberLevel > _levels.Count)
-            _currentLevel = _levels[0];
-        else
-            _currentLevel = _levels[numberLevel - 1];
-
-        _currentLevel.UpdateLevel();
-    }
     #endregion
+
+    private Level GetLevelByNumberLevel(int numberLevel)
+    {
+        for (int i = 0; i < _levels.Count; i++)
+        {
+            if (_levels[i].Number == numberLevel)
+                return _levels[i];
+        }
+
+        return _levels[0];
+    }
 }

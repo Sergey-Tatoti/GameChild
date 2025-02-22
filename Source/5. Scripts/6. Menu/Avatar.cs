@@ -43,9 +43,9 @@ public class Avatar : MonoBehaviour
                     _imageTopRightArm.sprite = item.SpriteTopArm;
                 }
 
-                _imageTop.gameObject.SetActive(item.SpriteItem != null);
-                _imageTopLeftArm.gameObject.SetActive(item.SpriteItem != null);
-                _imageTopRightArm.gameObject.SetActive(item.SpriteItem != null);
+                _imageTop.gameObject.SetActive(item.SpriteTop != null);
+                _imageTopLeftArm.gameObject.SetActive(item.SpriteTopArm != null);
+                _imageTopRightArm.gameObject.SetActive(item.SpriteTopArm != null);
                 break;
             case ItemInfo.Type.Glasses:
                 if (item.SpriteItem != null)
@@ -70,5 +70,9 @@ public class Avatar : MonoBehaviour
 
     public void ChangeName(string name) => _textName.text = name;
 
-    public void ShowMarkNewitem(bool isShow) => _imageMarkNewItem.gameObject.SetActive(isShow);
+    public void ShowMarkNewitem(bool isShow)
+    {
+        _imageMarkNewItem.gameObject.SetActive(isShow);
+        _imageMarkNewItem.GetComponent<ButtonAnimation>().SetShining(isShow);
+    }
 }

@@ -29,7 +29,7 @@ public class GameButtonManagerUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _playButton.onClick.AddListener(() => ClickedButtonPlay?.Invoke());
+        _playButton.onClick.AddListener(ClickedPlay);
         _shopButton.onClick.AddListener(() => ClickedButtonShop?.Invoke(true));
         _backShopButton.onClick.AddListener(() => ClickedButtonShop?.Invoke(false));
         _resetStepButton.onClick.AddListener(() => ClickedButtonResetStep?.Invoke());
@@ -41,7 +41,7 @@ public class GameButtonManagerUI : MonoBehaviour
 
     private void OnDisable()
     {
-        _playButton.onClick.RemoveListener(() => ClickedButtonPlay?.Invoke());
+        _playButton.onClick.RemoveListener(ClickedPlay);
         _shopButton.onClick.RemoveListener(() => ClickedButtonShop?.Invoke(true));
         _backShopButton.onClick.AddListener(() => ClickedButtonShop?.Invoke(false));
         _resetStepButton.onClick.RemoveListener(() => ClickedButtonResetStep?.Invoke());
@@ -49,6 +49,13 @@ public class GameButtonManagerUI : MonoBehaviour
         _arrowLeftButton.onClick.RemoveListener(() => ClickedButtonArrow.Invoke(Vector3.left));
         _arrowUpButton.onClick.RemoveListener(() => ClickedButtonArrow.Invoke(Vector3.up));
         _arrowDownButton.onClick.RemoveListener(() => ClickedButtonArrow.Invoke(Vector3.down));
+    }
+
+    private void ClickedPlay()
+    {
+        ActivateActionButton(false);
+
+        ClickedButtonPlay?.Invoke();
     }
 
     public void ActivateActionButton(bool isActivate)

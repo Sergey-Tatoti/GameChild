@@ -12,12 +12,13 @@ public class GamePlayManagerUI : MonoBehaviour
     [SerializeField] private StepManagerUI _stepManagerUI;
     [SerializeField] private TutorialManagerUI _tutorialManagerUI;
     [Space]
-    [SerializeField] private int _timeWaitShowNextLevel = 3;
+    [SerializeField] private float _timeWaitShowNextLevel = 3;
 
     private SoundManager _soundManager;
     private int _countReward;
 
     public event UnityAction CannedShowNextLevel;
+    public event UnityAction CompletedLevel;
     public event UnityAction<Item> ChoisenCardReward;
     public event UnityAction<List<Vector3>> CannedMovePlayer;
 
@@ -70,6 +71,7 @@ public class GamePlayManagerUI : MonoBehaviour
     public void ReloadLevel(int numberLevel)
     {
         _stepManagerUI.ResetSteps();
+        _gameButtonManagerUI.ActivateActionButton(true);
         _tutorialManagerUI.SetNextLevel(numberLevel);
     }
 
@@ -96,9 +98,9 @@ public class GamePlayManagerUI : MonoBehaviour
 
     private void OnChoisenCardRewardView(Item item)
     {
-        StartCoroutine(ShowWinPanel(false));
-
         ChoisenCardReward?.Invoke(item);
+
+        StartCoroutine(ShowWinPanel(false));
     }
 
     private void OnCloudsFilledScene() => CannedShowNextLevel?.Invoke();
@@ -107,6 +109,8 @@ public class GamePlayManagerUI : MonoBehaviour
 
     private IEnumerator ShowWinPanel(bool isShowSmile)
     {
+        CompletedLevel?.Invoke();
+
         yield return new WaitForSeconds(_timeWaitShowNextLevel);
 
         _switchLevelManagerUI.UseSwitchAnimation(isShowSmile);

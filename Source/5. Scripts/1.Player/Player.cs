@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteCharacterArmRight;
     [SerializeField] private SpriteRenderer _spriteCharacterLegLeft;
     [SerializeField] private SpriteRenderer _spriteCharacterLegRight;
+    [SerializeField] private SpriteRenderer _spriteShadow;
     [Header("Ёлементы одежды персонажа")]
     [SerializeField] private SpriteRenderer _spriteTop;
     [SerializeField] private SpriteRenderer _spriteTopArmLeft;
@@ -66,7 +67,7 @@ public class Player : MonoBehaviour
 
         _playerInventory.SetValue(name, MultiplyOrderInLayer, items, _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes, 
                                   _spriteCharacterArmLeft, _spriteCharacterArmRight, _spriteCharacterLegLeft,
-                                  _spriteCharacterLegRight, _spriteTop, _spriteTopArmLeft, _spriteTopArmRight,
+                                  _spriteCharacterLegRight, _spriteShadow, _spriteTop, _spriteTopArmLeft, _spriteTopArmRight,
                                   _spriteGlasses, _spriteHat, _keySprite);
 
         _playerMove.StepEnded += OnStepEnded;
@@ -108,6 +109,7 @@ public class Player : MonoBehaviour
         transform.position = _startPosition;
         _animator.SetBool("isRun", false);
 
+        _playerInventory.ResetKey();
         TouchedHitBox?.Invoke();
     }
 
@@ -120,6 +122,7 @@ public class Player : MonoBehaviour
     {
         StopedMove();
         transform.position = _startPosition;
+
         _playerInventory.ResetKey();
         TouchedHitBox?.Invoke();
         

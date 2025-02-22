@@ -64,7 +64,6 @@ public class CloudsManager : MonoBehaviour
     private void GenerateNewClouds()
     {
         _countActiveClouds = Random.Range(_minCountClouds, _maxCountClouds);
-        Debug.Log(_minCountClouds);
         float durationMoveClouds = Random.Range(_minDurationMoveClouds, _maxDurationMoveClouds);
 
         for (int i = 0; i < _countActiveClouds; i++)

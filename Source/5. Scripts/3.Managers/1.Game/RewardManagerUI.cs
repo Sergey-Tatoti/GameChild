@@ -10,9 +10,8 @@ public class RewardManagerUI : MonoBehaviour
     [SerializeField] private CardRewardView _cardRewardView;
     [SerializeField] private RewardBoxes _rewardBoxes;
     [Space]
-    [SerializeField] private GameObject _blockPanel;
     [SerializeField] private GameObject _templateSpawnCard;
-    [SerializeField] private GameObject _conteinerCardRewardView;
+    [SerializeField] private List<Transform> _placesCardReward;
     [SerializeField] private Transform _pointSpawnCard;
     [SerializeField] private Transform _pointMoveCardAfterChoose;
     [Space]
@@ -65,8 +64,6 @@ public class RewardManagerUI : MonoBehaviour
     {
         OpenedBigBoxReward?.Invoke();
 
-        _blockPanel.SetActive(true);
-
         FillCardViewReward();
     }
 
@@ -75,7 +72,7 @@ public class RewardManagerUI : MonoBehaviour
         CardRewardView cardRewardView;
 
         CreateCardView(out cardRewardView);
-        MoveCardView(cardRewardView);
+        MoveCardView(cardRewardView, _placesCardReward[_countReward - 1]);
 
         _rewardBoxes.PlayAnimationShowCard();
         _countReward--;
@@ -85,6 +82,7 @@ public class RewardManagerUI : MonoBehaviour
     {
         cardRewardView = Instantiate(_cardRewardView, _pointSpawnCard.transform);
         cardRewardView.SetValue(_closedItems[Random.Range(0, _closedItems.Count)]);
+        cardRewardView.BlockButton(true);
 
         cardRewardView.transform.position = _templateSpawnCard.transform.position;
         cardRewardView.transform.localScale = _templateSpawnCard.transform.localScale;
@@ -93,28 +91,30 @@ public class RewardManagerUI : MonoBehaviour
         cardRewardView.ClickedButtonCard += OnClickedButtonCard;
     }
 
-    private void MoveCardView(CardRewardView cardRewardView)
+    private void MoveCardView(CardRewardView cardRewardView, Transform cardRewardPlace)
     {
-        cardRewardView.transform.DOMove(_conteinerCardRewardView.transform.position, _durationMoveCardBox);
-        cardRewardView.transform.DOScale(1, _durationMoveCardBox).OnComplete(() => TryTakeNextCardView());
+        cardRewardView.transform.DOScale(1, _durationMoveCardBox);
+        cardRewardView.transform.DOMove(cardRewardPlace.transform.position, _durationMoveCardBox).OnComplete(() =>
+        {
+            cardRewardPlace.transform.SetParent(cardRewardPlace);
+            TryTakeNextCardView();
+        });
     }
 
     private void TryTakeNextCardView()
     {
-        if(_countReward > 0)
+        if (_countReward > 0)
             FillCardViewReward();
         else
-            ShowFilledCards();
+            ActivateCardsReward(false);
     }
 
-    private void ShowFilledCards()
+    private void ActivateCardsReward(bool isActivate)
     {
         for (int i = 0; i < _cardRewardViews.Count; i++)
         {
-            _cardRewardViews[i].transform.SetParent(_conteinerCardRewardView.transform);
+            _cardRewardViews[i].BlockButton(isActivate);
         }
-        _conteinerCardRewardView.SetActive(true);
-        _blockPanel.SetActive(false);
     }
 
     #endregion
@@ -126,7 +126,8 @@ public class RewardManagerUI : MonoBehaviour
         _rewardScale.SetScale(0);
         _closedItems.Remove(cardRewardView.Item);
 
-        cardRewardView.BlockButton(true);
+        ActivateCardsReward(true);
+
         StartCoroutine(WaitShowCardView(cardRewardView));
     }
 
@@ -153,7 +154,6 @@ public class RewardManagerUI : MonoBehaviour
         cardRewardView.transform.DOMove(_pointMoveCardAfterChoose.position, _durationMoveCardShop);
         cardRewardView.transform.DOScale(0, _durationMoveCardShop).OnComplete(() => ResetCardViews());
 
-        _conteinerCardRewardView.SetActive(false);
         _rewardBoxes.HideRewards(_durationChangeScaleRewardBox);
 
         ChoisenCardReward?.Invoke(cardRewardView.Item);
