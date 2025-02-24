@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +13,7 @@ public class RewardBoxes : MonoBehaviour
 
     [Header("Reward Big Box")]
     [SerializeField] private GameObject _panelReward;
-    [SerializeField] private GameObject _bigBoxReward;
+    [SerializeField] private RewardBigBox _bigBoxReward;
     [SerializeField] private Button _bigBoxRewardButton;
     [Header("Reward Box")]
     [SerializeField] private Button _boxRewardButton;
@@ -25,10 +24,19 @@ public class RewardBoxes : MonoBehaviour
     private Vector3 _endScaleBigRewardBox;
 
     public event UnityAction ClickedBigBoxReward;
+    public event UnityAction PlayedAnimationBigBoxReward;
 
-    private void OnEnable() => _bigBoxRewardButton.onClick.AddListener(OnClickedBigBoxRewardButton);
+    private void OnEnable()
+    {
+        _bigBoxRewardButton.onClick.AddListener(OnClickedBigBoxRewardButton);
+        _bigBoxReward.RestartedAnimationWait += OnRestartedAnimationWait;
+    }
 
-    private void OnDisable() => _bigBoxRewardButton.onClick.AddListener(OnClickedBigBoxRewardButton);
+    private void OnDisable()
+    {
+        _bigBoxRewardButton.onClick.AddListener(OnClickedBigBoxRewardButton);
+        _bigBoxReward.RestartedAnimationWait -= OnRestartedAnimationWait;
+    }
 
     public void SetValue()
     {
@@ -57,6 +65,8 @@ public class RewardBoxes : MonoBehaviour
 
         StartCoroutine(WaitCloseBigBoxReward());
     }
+
+    private void OnRestartedAnimationWait() => PlayedAnimationBigBoxReward?.Invoke();
 
     private IEnumerator ShowBigBoxReward(float durationChangeScaleBox)
     {

@@ -25,9 +25,9 @@ public class PlayerTouchTracker : MonoBehaviour
             TouchedTeleport?.Invoke(teleport.AnotherTeleportPositionSpawn);
         }
 
-        if (collision.gameObject.GetComponent<StarLevel>())
+        if (collision.gameObject.TryGetComponent<StarLevel>(out StarLevel star))
         {
-            collision.gameObject.SetActive(false);
+            star.Activate();
             TouchedStarLevel?.Invoke();
         }
 

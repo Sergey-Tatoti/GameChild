@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class GamePlayManagerUI : MonoBehaviour
 {
     [SerializeField] private GameObject _panelShop;
@@ -33,6 +34,7 @@ public class GamePlayManagerUI : MonoBehaviour
 
         _rewardManagerUI.OpenedBigBoxReward += OnOpenedBigBoxReward;
         _rewardManagerUI.ChoisenCardReward += OnChoisenCardRewardView;
+        _rewardManagerUI.MovedWaitBigBoxReward += OnMovedWaitBigBoxReward;
     }
 
     private void OnDisable()
@@ -46,6 +48,7 @@ public class GamePlayManagerUI : MonoBehaviour
 
         _rewardManagerUI.OpenedBigBoxReward -= OnOpenedBigBoxReward;
         _rewardManagerUI.ChoisenCardReward -= OnChoisenCardRewardView;
+        _rewardManagerUI.MovedWaitBigBoxReward -= OnMovedWaitBigBoxReward;
     }
 
     public void SetStartValue(SoundManager soundManager, Level level, List<Item> items, int experience, int countReward)
@@ -98,6 +101,8 @@ public class GamePlayManagerUI : MonoBehaviour
 
     private void OnChoisenCardRewardView(Item item)
     {
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
+
         ChoisenCardReward?.Invoke(item);
 
         StartCoroutine(ShowWinPanel(false));
@@ -105,7 +110,9 @@ public class GamePlayManagerUI : MonoBehaviour
 
     private void OnCloudsFilledScene() => CannedShowNextLevel?.Invoke();
 
-    private void OnOpenedBigBoxReward() => _soundManager.PlaySound(SoundManager.TypeSound.ClickRewardBox);
+    private void OnOpenedBigBoxReward() => _soundManager.PlaySound(SoundManager.TypeSound.OpenRewardBox);
+
+    private void OnMovedWaitBigBoxReward() => _soundManager.PlaySound(SoundManager.TypeSound.MoveRewardBox);
 
     private IEnumerator ShowWinPanel(bool isShowSmile)
     {
@@ -113,6 +120,7 @@ public class GamePlayManagerUI : MonoBehaviour
 
         yield return new WaitForSeconds(_timeWaitShowNextLevel);
 
+        _soundManager.PlaySound(SoundManager.TypeSound.SwitchLevel);
         _switchLevelManagerUI.UseSwitchAnimation(isShowSmile);
     }
 
@@ -120,31 +128,37 @@ public class GamePlayManagerUI : MonoBehaviour
 
     #region ----- Clicked Buttons -----
 
+    public void OnClickedButton() => _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
+
     private void OnClickedButtonPlay()
     {
         _tutorialManagerUI.StopActions();
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButtonPlay);
 
         if (_stepManagerUI.GetDirections().Count > 0)
-            CannedMovePlayer?.Invoke(_stepManagerUI.GetDirections());
+            Invoke(nameof(CanMove), 0.1f);
     }
+
+    private void CanMove() => CannedMovePlayer?.Invoke(_stepManagerUI.GetDirections());
 
     private void OnClickedButtonShop(bool isShow)
     {
         _panelShop.SetActive(isShow);
-        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
+        OnClickedButton();
     }
 
     private void OnClickedButtonArrow(Vector3 direction)
     {
         _stepManagerUI.OnClickedButtonArrow(direction);
         _tutorialManagerUI.ClickedButton(direction);
-        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
+        OnClickedButton();
     }
 
     private void OnClickedButtonResetStep()
     {
         _stepManagerUI.OnClickedButtonResetStep();
         _tutorialManagerUI.ClickedButton(Vector3.zero);
+        OnClickedButton();
     }
 
     #endregion

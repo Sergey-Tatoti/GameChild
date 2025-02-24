@@ -28,6 +28,7 @@ public class ShopManagerUI : MonoBehaviour
     private List<ShopCardView> _currentsCardView = new List<ShopCardView>();
 
     public event UnityAction<Item, Item> ChangedSelectedItem;
+    public event UnityAction ClickedButtonShowScrollView;
 
     private void OnEnable()
     {
@@ -198,6 +199,8 @@ public class ShopManagerUI : MonoBehaviour
         _buttonRamka.GetComponent<Image>().sprite = isShowRamka ? _choosedButtonSprite : _standartButtonSprite;
         _scrollViewGround.gameObject.SetActive(isShowGround);
         _buttonGround.GetComponent<Image>().sprite = isShowGround ? _choosedButtonSprite : _standartButtonSprite;
+
+        ClickedButtonShowScrollView?.Invoke();
     }
 
     private void OnClickedButtonCard(ShopCardView shopCardView) => ChangeCurrentShopCard(shopCardView);

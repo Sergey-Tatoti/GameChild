@@ -17,9 +17,14 @@ public class Level : MonoBehaviour
     public bool IsRightPlayerDirection => _levelInfo.IsRightPlayerDirection;
     public Vector3 PlayerStartPosition => _levelInfo.PlayerStartPosition;
 
+    public void SetValue()
+    {
+        _starLevel.SetValue();
+    }
+
     public void UpdateLevel()
     {
-        _starLevel.gameObject.SetActive(true);
+        _starLevel.ResetStar();
 
         ActivatorKey();
         ActivatorLock();
@@ -41,5 +46,4 @@ public class Level : MonoBehaviour
             _locks[i].gameObject.SetActive(true);
         }
     }
-
 }

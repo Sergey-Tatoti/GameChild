@@ -11,18 +11,20 @@ public class ShopManager : MonoBehaviour
     private List<int> _idSelectedItems = new List<int>();
     private List<Item> _items;
 
-    public event UnityAction<string> ChangedName;
     public event UnityAction<Item> ChangedCharacter;
     public event UnityAction<List<int>, Item> ChangedIdSelectedItems;
+    public event UnityAction ClickedButton;
 
     private void OnEnable()
     {
         _shopManagerUI.ChangedSelectedItem += OnChangedSelectedItem;
+        _shopManagerUI.ClickedButtonShowScrollView += OnClickedButtonShowScrollView;
     }
 
     private void OnDisable()
     {
         _shopManagerUI.ChangedSelectedItem -= OnChangedSelectedItem;
+        _shopManagerUI.ClickedButtonShowScrollView -= OnClickedButtonShowScrollView;
     }
 
     public void SetValue(List<Item> items)
@@ -41,6 +43,8 @@ public class ShopManager : MonoBehaviour
 
         _shopManagerUI.UpdateShopCards(_items);
     }
+
+    private void OnClickedButtonShowScrollView() => ClickedButton?.Invoke();
 
     #region ----- SelectedItems -----
 

@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _character;
     [Tooltip("Продолжительность движения персонажа от блока к блоку")][SerializeField] private float _durationMove;
     [SerializeField] private SpriteRenderer _keySprite;
+    [HideInInspector] public List<Item> Items;
 
     private Vector3 _startPosition;
     private Coroutine _coroutineMove;
@@ -37,11 +38,12 @@ public class Player : MonoBehaviour
     private PlayerMove _playerMove;
     private PlayerTouchTracker _playerTouchTracker;
     private PlayerInventory _playerInventory;
-    private List<Item> _items;
 
     public event UnityAction TouchedHitBox;
     public event UnityAction TouchedStarLevel;
     public event UnityAction TouchedTeleport;
+    public event UnityAction TouchedKey;
+    public event UnityAction TouchedLock;
     public event UnityAction ChangedPosition;
     public event UnityAction<int> TouchedStarExperience;
 
@@ -64,8 +66,9 @@ public class Player : MonoBehaviour
         _playerTouchTracker = GetComponent<PlayerTouchTracker>();
         _playerInventory = GetComponent<PlayerInventory>();
         _animator = _character.GetComponent<Animator>();
+        Items = items;
 
-        _playerInventory.SetValue(name, MultiplyOrderInLayer, items, _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes, 
+        _playerInventory.SetValue(name, MultiplyOrderInLayer, items, _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes,
                                   _spriteCharacterArmLeft, _spriteCharacterArmRight, _spriteCharacterLegLeft,
                                   _spriteCharacterLegRight, _spriteShadow, _spriteTop, _spriteTopArmLeft, _spriteTopArmRight,
                                   _spriteGlasses, _spriteHat, _keySprite);
@@ -125,7 +128,6 @@ public class Player : MonoBehaviour
 
         _playerInventory.ResetKey();
         TouchedHitBox?.Invoke();
-        
     }
 
     private void OnTouchedStarLevel()
@@ -151,12 +153,19 @@ public class Player : MonoBehaviour
     private void OnTouchedKey(GameKey gameKey)
     {
         _playerInventory.SetKey(gameKey);
+        TouchedKey?.Invoke();
     }
 
     private void OnTouchedLock(Lock locked)
     {
-       if(!_playerInventory.CheckLock(locked))
-           OnTouchedHitBox();
+        if (!_playerInventory.CheckLock(locked))
+        {
+            StopedMove();
+            transform.position = _startPosition;
+
+            _playerInventory.ResetKey();
+            TouchedLock?.Invoke();
+        }
     }
 
     private void OnTouchedStarExperience(int experience) => TouchedStarExperience?.Invoke(experience);

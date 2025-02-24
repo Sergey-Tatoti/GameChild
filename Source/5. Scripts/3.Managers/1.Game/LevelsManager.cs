@@ -20,6 +20,8 @@ public class LevelsManager : MonoBehaviour
     {
         _experience = experience;
         _currentLevel = GetLevelByNumberLevel(numberLevel);
+
+        for (int i = 0; i < _levels.Count; i++) { _levels[i].SetValue(); }
     }
 
     public void UpdateLevel() => _currentLevel.UpdateLevel();

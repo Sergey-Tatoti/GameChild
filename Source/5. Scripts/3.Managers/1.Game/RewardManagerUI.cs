@@ -26,16 +26,19 @@ public class RewardManagerUI : MonoBehaviour
     private int _countReward;
 
     public event UnityAction OpenedBigBoxReward;
+    public event UnityAction MovedWaitBigBoxReward;
     public event UnityAction<Item> ChoisenCardReward;
 
     private void OnEnable()
     {
         _rewardBoxes.ClickedBigBoxReward += OnClickedBigBoxReward;
+        _rewardBoxes.PlayedAnimationBigBoxReward += OnPlayedAnimationBigBoxReward;
     }
 
     private void OnDisable()
     {
         _rewardBoxes.ClickedBigBoxReward -= OnClickedBigBoxReward;
+        _rewardBoxes.PlayedAnimationBigBoxReward -= OnPlayedAnimationBigBoxReward;
     }
 
     public void SetValue(List<Item> items, int experience)
@@ -59,6 +62,8 @@ public class RewardManagerUI : MonoBehaviour
         _countReward = countReward;
         _rewardBoxes.ActivateBoxesRewards(_durationChangeScaleRewardBox);
     }
+
+    private void OnPlayedAnimationBigBoxReward() => MovedWaitBigBoxReward?.Invoke();
 
     private void OnClickedBigBoxReward()
     {
