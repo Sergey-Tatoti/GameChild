@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf3273d917c6c2a47849b74885f50ec9, type: 3}
-  m_Name: LevelInfo19
+  m_Name: LevelInfo_14
   m_EditorClassIdentifier: 
-  _number: 19
-  _countExperience: 10000
+  _number: 14
+  _countExperience: 50
   _playerStepHorizontal: 1.642
   _playerStepVertical: 1.386
-  _playerStartPosition: {x: -0.36, y: 1.56, z: 0}
+  _playerStartPosition: {x: -3.58, y: 4.25, z: 0}
   _isRightPlayerDirection: 1

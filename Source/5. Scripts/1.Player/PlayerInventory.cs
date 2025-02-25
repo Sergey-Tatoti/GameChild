@@ -114,9 +114,13 @@ public class PlayerInventory : MonoBehaviour
     public void OnChangedLine(int orderInLayer)
     {
         if (_allSpriteRenderers[0].sortingOrder >= _multiplyOrderInLayer)
+        {
             ResetOrderInLayer();
+        }
 
+        Debug.Log(orderInLayer);
         _currentOrderInLayer = orderInLayer;
+        
 
         for (int i = 0; i < _allSpriteRenderers.Count; i++)
         {
