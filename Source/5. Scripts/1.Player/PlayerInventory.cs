@@ -118,7 +118,6 @@ public class PlayerInventory : MonoBehaviour
             ResetOrderInLayer();
         }
 
-        Debug.Log(orderInLayer);
         _currentOrderInLayer = orderInLayer;
         
 

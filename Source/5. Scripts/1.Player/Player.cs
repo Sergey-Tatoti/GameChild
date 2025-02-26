@@ -60,15 +60,15 @@ public class Player : MonoBehaviour
         _playerTouchTracker.ChangedLine -= _playerInventory.OnChangedLine;
     }
 
-    public void SetValue(string name, List<Item> items)
+    public void SetValue(string name, List<Item> openedItems, List<Item> selectedItems)
     {
         _playerMove = GetComponent<PlayerMove>();
         _playerTouchTracker = GetComponent<PlayerTouchTracker>();
         _playerInventory = GetComponent<PlayerInventory>();
         _animator = _character.GetComponent<Animator>();
-        Items = items;
+        Items = openedItems;
 
-        _playerInventory.SetValue(name, MultiplyOrderInLayer, items, _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes,
+        _playerInventory.SetValue(name, MultiplyOrderInLayer, selectedItems, _spriteCharacterBody, _spriteCharacterHead, _spriteCharacterEyes,
                                   _spriteCharacterArmLeft, _spriteCharacterArmRight, _spriteCharacterLegLeft,
                                   _spriteCharacterLegRight, _spriteShadow, _spriteTop, _spriteTopArmLeft, _spriteTopArmRight,
                                   _spriteGlasses, _spriteHat, _keySprite);

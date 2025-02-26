@@ -64,7 +64,7 @@ public class GamePlayManager : MonoBehaviour
     {
         SetInfoItemsById(openedIdItems, selectedIdItems, showedIdItems);
 
-        _player.SetValue(name, GetItemsById(selectedIdItems));
+        _player.SetValue(name, GetItemsById(openedIdItems), GetItemsById(selectedIdItems));
         _levelManager.SetLoadingValue(numberLevel, experience);
         _shopManager.SetValue(_allItems);
         _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience, _countReward);
@@ -132,8 +132,9 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnTouchedStarLevel()
     {
-        bool isActivateReward = _levelManager.Experience >= _maxExperience && _player.Items.Count < _allItems.Count;
         ChangeExperience(_levelManager.CurrentLevel.CountExperience);
+
+        bool isActivateReward = _levelManager.Experience >= _maxExperience && _player.Items.Count < _allItems.Count;
 
         _gamePlayManagerUI.EndLevel(isActivateReward);
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedStar);

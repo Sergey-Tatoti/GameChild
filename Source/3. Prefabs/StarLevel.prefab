@@ -920,6 +920,7 @@ MonoBehaviour:
   - {fileID: 550853319620228727}
   - {fileID: 5375633537237055640}
   - {fileID: 4572698672858782856}
+  _shine: {fileID: 6586576897105096316}
   _durationMovePiecesPositions: 0.5
   _durationMovePiecesPoint: 1
   _durationChangeScale: 1

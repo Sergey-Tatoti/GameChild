@@ -6,6 +6,7 @@ public class StarLevel : GameElement
 {
     [Header("Разместить изначально кусочки в те места, куда они должны придти и размер")]
     [SerializeField] private List<SpriteRenderer> _piecesStar;
+    [SerializeField] private SpriteRenderer _shine;
     [SerializeField] private float _durationMovePiecesPositions;
     [SerializeField] private float _durationMovePiecesPoint;
     [SerializeField] private float _durationChangeScale;
@@ -32,6 +33,7 @@ public class StarLevel : GameElement
     public void Activate()
     {
         _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 0);
+        _shine.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 0);
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
@@ -42,6 +44,7 @@ public class StarLevel : GameElement
     public void ResetStar()
     {
         _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 1);
+        _shine.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 1);
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
