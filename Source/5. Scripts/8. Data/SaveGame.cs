@@ -28,12 +28,14 @@ public class SaveGame : MonoBehaviour
     #endregion
 
     #region LoadeAll
-    public void LoadAll(GamePlayManager gamePlayManager)
+    public void LoadAll(GamePlayManager gamePlayManager, MenuManager menuManager)
     {
         _data = SaveManager.Load<SaveData.GameData>(SaveKey);
 
         gamePlayManager.SetLoadingValues(_data.Experience, _data.Level, _data.IdOpenItems, 
                                          _data.IdSelectedItems, _data.IdShowedItems);
+
+        menuManager.SetLoadingValues(_data.Level);
     }
     #endregion
 }

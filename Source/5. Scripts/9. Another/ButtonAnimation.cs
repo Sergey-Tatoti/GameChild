@@ -13,6 +13,7 @@ public class ButtonAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private float _durationChangePosition = 0.5f;
     [SerializeField] private bool _canChangePosition;
     [Header("Эффект мерцания")]
+    [SerializeField] private GameObject _finger;
     [SerializeField] private Vector3 _scaleSmall;
     [SerializeField] private Vector3 _scaleBig;
     [SerializeField] private float _durationShine;
@@ -48,15 +49,30 @@ public class ButtonAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void SetShining(bool shining)
     {
+        if (_finger != null)
+            ShineFinger(shining);
+        else
+            ShineButton(shining);
+    }
+
+    private void ShineFinger(bool shining)
+    {
+        _finger.SetActive(shining);
+        _finger.transform.localScale = _scaleSmall;
+
         if (shining)
-        {
-            transform.localScale = _scaleSmall;
+            _finger.transform.DOScale(_scaleBig, _durationShine).SetLoops(-1, LoopType.Yoyo);
+        else
+            _finger.transform.DOKill(this);
+    }
+
+    private void ShineButton(bool shining)
+    {
+        transform.localScale = _scaleSmall;
+
+        if (shining)
             transform.DOScale(_scaleBig, _durationShine).SetLoops(-1, LoopType.Yoyo);
-        }
-        else if (!shining)
-        {
-            transform.localScale = _startScale;
+        else
             transform.DOKill(this);
-        }
     }
 }

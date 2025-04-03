@@ -1,22 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class ShopManagerUI : MonoBehaviour
 {
     [SerializeField] private List<Avatar> _avatars;
-    [Space]
-    [SerializeField] private Button _buttonCharacter;
-    [SerializeField] private Button _buttonTop;
-    [SerializeField] private Button _buttonGlasses;
-    [SerializeField] private Button _buttonCap;
-    [SerializeField] private Button _buttonRamka;
-    [SerializeField] private Button _buttonGround;
-    [Space]
-    [SerializeField] private Sprite _choosedButtonSprite;
-    [SerializeField] private Sprite _standartButtonSprite;
-    [Space]
     [SerializeField] private ScrollViewShop _scrollViewCharacter;
     [SerializeField] private ScrollViewShop _scrollViewTop;
     [SerializeField] private ScrollViewShop _scrollViewGlasses;
@@ -24,66 +12,88 @@ public class ShopManagerUI : MonoBehaviour
     [SerializeField] private ScrollViewShop _scrollViewRamka;
     [SerializeField] private ScrollViewShop _scrollViewGround;
 
+    private List<ScrollViewShop> _scrollViewShops;
     private List<ShopCardView> _shopCardViews = new List<ShopCardView>();
     private List<ShopCardView> _currentsCardView = new List<ShopCardView>();
+    private List<Tutorial> _tutorials;
 
     public event UnityAction<Item, Item> ChangedSelectedItem;
     public event UnityAction ClickedButtonShowScrollView;
 
+    #region ----- Initialize ------
+
     private void OnEnable()
     {
-        _buttonCharacter.onClick.AddListener(() => ShowScrollViews(true, false, false, false, false, false));
-        _buttonTop.onClick.AddListener(() => ShowScrollViews(false, true, false, false, false, false));
-        _buttonGlasses.onClick.AddListener(() => ShowScrollViews(false, false, true, false, false, false));
-        _buttonCap.onClick.AddListener(() => ShowScrollViews(false, false, false, true, false, false));
-        _buttonRamka.onClick.AddListener(() => ShowScrollViews(false, false, false, false, true, false));
-        _buttonGround.onClick.AddListener(() => ShowScrollViews(false, false, false, false, false, true));
+        if(_scrollViewShops != null)
+        {
+            for (int i = 0; i < _scrollViewShops.Count; i++)
+            {
+                _scrollViewShops[i].ClickedButtonShop += OnClickedButtonShop;
+            }
+        }
+
+        if(_shopCardViews != null)
+        {
+            for (int i = 0; i < _shopCardViews.Count; i++)
+            {
+                _shopCardViews[i].ClickedButtonCard += OnClickedButtonCard;
+            }
+        }
     }
 
     private void OnDisable()
     {
-        _buttonCharacter.onClick.RemoveListener(() => ShowScrollViews(true, false, false, false, false, false));
-        _buttonTop.onClick.RemoveListener(() => ShowScrollViews(false, true, false, false, false, false));
-        _buttonGlasses.onClick.RemoveListener(() => ShowScrollViews(false, false, true, false, false, false));
-        _buttonCap.onClick.RemoveListener(() => ShowScrollViews(false, false, false, true, false, false));
-        _buttonRamka.onClick.RemoveListener(() => ShowScrollViews(false, false, false, false, true, false));
-        _buttonGround.onClick.RemoveListener(() => ShowScrollViews(false, false, false, false, false, true));
+        if (_scrollViewShops != null)
+        {
+            for (int i = 0; i < _scrollViewShops.Count; i++)
+            {
+                _scrollViewShops[i].ClickedButtonShop -= OnClickedButtonShop;
+            }
+        }
+
+        if (_shopCardViews != null)
+        {
+            for (int i = 0; i < _shopCardViews.Count; i++)
+            {
+                _shopCardViews[i].ClickedButtonCard -= OnClickedButtonCard;
+            }
+        }
     }
 
-    public void SetValue(List<Item> items, ShopCardView shopCardView)
+    public void SetValue(List<Item> items, ShopCardView shopCardView, List<Tutorial> tutorials)
     {
-        _scrollViewCharacter.gameObject.SetActive(true);
-        _buttonCharacter.GetComponent<Image>().sprite = _choosedButtonSprite;
+        _tutorials = tutorials;
+        _scrollViewCharacter.ShowPanel(true);
 
         FillListShopCards(items, shopCardView);
+        FillTutorials();
+
+        _scrollViewShops = new List<ScrollViewShop>() { _scrollViewCap, _scrollViewCharacter, _scrollViewGlasses, 
+                                                        _scrollViewGround, _scrollViewRamka, _scrollViewTop };
+
+        for (int i = 0; i < _scrollViewShops.Count; i++)
+        {
+            _scrollViewShops[i].ClickedButtonShop += OnClickedButtonShop;
+        }
     }
+
+    private void FillTutorials()
+    {
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].SetButtonsShop(_scrollViewCharacter.ButtonShop, _scrollViewGlasses.ButtonShop,
+                                         _scrollViewTop.ButtonShop, _scrollViewRamka.ButtonShop,
+                                         _scrollViewGround.ButtonShop, _scrollViewCap.ButtonShop, _shopCardViews);
+        }
+    }
+
+    #endregion
+
+    #region ----- Avatars -----
 
     public void ChangeSpriteItem(Item item)
     {
         for (int i = 0; i < _avatars.Count; i++) { _avatars[i].ChangeSpriteItem(item); }
-    }
-
-    #region ----- ActionsShopCards -----
-
-    public void UpdateShopCards(List<Item> items)
-    {
-        UpdatesShopCardViews();
-        UpdateAvatars(items);
-
-        _scrollViewCharacter.UpdateViewShop(items);
-        _scrollViewTop.UpdateViewShop(items);
-        _scrollViewCap.UpdateViewShop(items);
-        _scrollViewGlasses.UpdateViewShop(items);
-        _scrollViewRamka.UpdateViewShop(items);
-        _scrollViewGround.UpdateViewShop(items);
-    }
-
-    private void UpdatesShopCardViews()
-    {
-        for (int i = 0; i < _shopCardViews.Count; i++)
-        {
-            _shopCardViews[i].UpdateInfo();
-        }
     }
 
     private void UpdateAvatars(List<Item> items)
@@ -105,6 +115,32 @@ public class ShopManagerUI : MonoBehaviour
         for (int i = 0; i < _avatars.Count; i++)
         {
             _avatars[i].ShowMarkNewitem(isShowMark);
+        }
+    }
+
+    #endregion
+
+    #region ----- ActionsShopCards -----
+
+
+    public void UpdateShopCards(List<Item> items)
+    {
+        UpdatesShopCardViews();
+        UpdateAvatars(items);
+
+        _scrollViewCharacter.UpdateViewShop(items);
+        _scrollViewTop.UpdateViewShop(items);
+        _scrollViewCap.UpdateViewShop(items);
+        _scrollViewGlasses.UpdateViewShop(items);
+        _scrollViewRamka.UpdateViewShop(items);
+        _scrollViewGround.UpdateViewShop(items);
+    }
+
+    private void UpdatesShopCardViews()
+    {
+        for (int i = 0; i < _shopCardViews.Count; i++)
+        {
+            _shopCardViews[i].UpdateInfo();
         }
     }
 
@@ -171,37 +207,24 @@ public class ShopManagerUI : MonoBehaviour
         ChangeSpriteItem(shopCard.item);
     }
 
-    private ShopCardView GetCardViewByItem(Item item)
-    {
-        for (int i = 0; i < _shopCardViews.Count; i++)
-        {
-            if (_shopCardViews[i].item == item)
-                return _shopCardViews[i];
-        }
-        return null;
-    }
-
     #endregion
 
+    #region ----- Clicked Buttons -----
 
-    private void ShowScrollViews(bool isShowCharacter, bool isShowTop, bool isShowGlasses, bool isShowCap,
-                                 bool isShowRamka, bool isShowGround)
+    private void OnClickedButtonShop(ScrollViewShop scrollViewShop)
     {
-        _scrollViewCharacter.gameObject.SetActive(isShowCharacter);
-        _buttonCharacter.GetComponent<Image>().sprite = isShowCharacter ? _choosedButtonSprite : _standartButtonSprite;
-        _scrollViewTop.gameObject.SetActive(isShowTop);
-        _buttonTop.GetComponent<Image>().sprite = isShowTop ? _choosedButtonSprite : _standartButtonSprite;
-        _scrollViewGlasses.gameObject.SetActive(isShowGlasses);
-        _buttonGlasses.GetComponent<Image>().sprite = isShowGlasses ? _choosedButtonSprite : _standartButtonSprite;
-        _scrollViewCap.gameObject.SetActive(isShowCap);
-        _buttonCap.GetComponent<Image>().sprite = isShowCap ? _choosedButtonSprite : _standartButtonSprite;
-        _scrollViewRamka.gameObject.SetActive(isShowRamka);
-        _buttonRamka.GetComponent<Image>().sprite = isShowRamka ? _choosedButtonSprite : _standartButtonSprite;
-        _scrollViewGround.gameObject.SetActive(isShowGround);
-        _buttonGround.GetComponent<Image>().sprite = isShowGround ? _choosedButtonSprite : _standartButtonSprite;
+        for (int i = 0; i < _scrollViewShops.Count; i++)
+        {
+            if (_scrollViewShops[i] == scrollViewShop)
+                _scrollViewShops[i].ShowPanel(true);
+            else
+                _scrollViewShops[i].ShowPanel(false);
+        }
 
         ClickedButtonShowScrollView?.Invoke();
     }
 
     private void OnClickedButtonCard(ShopCardView shopCardView) => ChangeCurrentShopCard(shopCardView);
+
+    #endregion
 }

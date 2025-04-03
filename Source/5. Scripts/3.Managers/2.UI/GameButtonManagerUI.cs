@@ -9,6 +9,8 @@ public class GameButtonManagerUI : MonoBehaviour
     [SerializeField] private Button _shopButton;
     [SerializeField] private Button _backShopButton;
     [SerializeField] private Button _resetStepButton;
+    [SerializeField] private Button _backMenuButton;
+    [SerializeField] private Button _lampButton;
     [Header("Arrow Buttons")]
     [SerializeField] private Button _arrowRightButton;
     [SerializeField] private Button _arrowLeftButton;
@@ -21,15 +23,23 @@ public class GameButtonManagerUI : MonoBehaviour
     public Button ArrowUp => _arrowUpButton;
     public Button StartSteps => _playButton;
     public Button ResetStepButton => _resetStepButton;
+    public Button ShopButton => _shopButton;
+    public Button BackMenuButton => _backMenuButton;
+    public Button BackShopButton => _backShopButton;
+    public Button LampButton => _lampButton;
 
     public event UnityAction ClickedButtonPlay;
     public event UnityAction ClickedButtonResetStep;
+    public event UnityAction ClickedButtonBackMenu;
+    public event UnityAction ClickedButtonLamp;
     public event UnityAction<bool> ClickedButtonShop;
     public event UnityAction<Vector3> ClickedButtonArrow;
 
     private void OnEnable()
     {
         _playButton.onClick.AddListener(ClickedPlay);
+        _backMenuButton.onClick.AddListener(() => ClickedButtonBackMenu?.Invoke());
+        _lampButton.onClick.AddListener(() => ClickedButtonLamp?.Invoke());
         _shopButton.onClick.AddListener(() => ClickedButtonShop?.Invoke(true));
         _backShopButton.onClick.AddListener(() => ClickedButtonShop?.Invoke(false));
         _resetStepButton.onClick.AddListener(() => ClickedButtonResetStep?.Invoke());
@@ -42,8 +52,10 @@ public class GameButtonManagerUI : MonoBehaviour
     private void OnDisable()
     {
         _playButton.onClick.RemoveListener(ClickedPlay);
+        _backMenuButton.onClick.RemoveListener(() => ClickedButtonBackMenu?.Invoke());
+        _lampButton.onClick.RemoveListener(() => ClickedButtonLamp?.Invoke());
         _shopButton.onClick.RemoveListener(() => ClickedButtonShop?.Invoke(true));
-        _backShopButton.onClick.AddListener(() => ClickedButtonShop?.Invoke(false));
+        _backShopButton.onClick.RemoveListener(() => ClickedButtonShop?.Invoke(false));
         _resetStepButton.onClick.RemoveListener(() => ClickedButtonResetStep?.Invoke());
         _arrowRightButton.onClick.RemoveListener(() => ClickedButtonArrow.Invoke(Vector3.right));
         _arrowLeftButton.onClick.RemoveListener(() => ClickedButtonArrow.Invoke(Vector3.left));
@@ -66,5 +78,11 @@ public class GameButtonManagerUI : MonoBehaviour
         _arrowLeftButton.interactable = isActivate;
         _arrowUpButton.interactable = isActivate;
         _arrowDownButton.interactable = isActivate;
+    }
+
+    public void ActivateButtonLamp(bool isActivate)
+    {
+        _lampButton.gameObject.SetActive(isActivate);
+        _lampButton.GetComponent<ButtonAnimation>().SetShining(isActivate);
     }
 }

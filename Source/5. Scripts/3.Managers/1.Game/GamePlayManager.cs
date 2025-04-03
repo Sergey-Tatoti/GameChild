@@ -1,19 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GamePlayManager : MonoBehaviour
 {
     [SerializeField] private GamePlayManagerUI _gamePlayManagerUI;
     [SerializeField] private LevelsManager _levelManager;
     [SerializeField] private ShopManager _shopManager;
-    [SerializeField] private SoundManager _soundManager;
     [SerializeField] private CloudsManager _cloudsManager;
-    [SerializeField] private Player _player;
-    [SerializeField] private SaveGame _saveGame;
-    [SerializeField] public List<Item> _allItems;
+    [SerializeField] public List<Item> _allItems; // public для тестов
+    [SerializeField] private List<Tutorial> _tutorials;
+
+    private Player _player;
+    private SaveGame _saveGame;
+    private SoundManager _soundManager;
 
     private int _countReward = 3;
     private int _maxExperience = 100;
+
+    public event UnityAction OnClickedBackMenu;
+
+    #region ----- Initialize -----
 
     private void OnEnable()
     {
@@ -21,17 +28,21 @@ public class GamePlayManager : MonoBehaviour
         _gamePlayManagerUI.CannedShowNextLevel += OnCannedShowNextLevel;
         _gamePlayManagerUI.ChoisenCardReward += OnChoisenCardRewardView;
         _gamePlayManagerUI.CompletedLevel += OnCompletedLevel;
+        _gamePlayManagerUI.ClickedButtonBackMenu += OnClickedButtonBackMenu;
 
-        _player.TouchedHitBox += OnTouchedHitBox;
-        _player.TouchedStarLevel += OnTouchedStarLevel;
-        _player.TouchedStarExperience += OnTouchedStarExperience;
-        _player.TouchedTeleport += OnTouchedTeleport;
-        _player.TouchedKey += OnTouchedKey;
-        _player.TouchedLock += OnTouchedLock;
-        _player.ChangedPosition += OnChangedPosition;
+        if (_player != null)
+        {
+            _player.TouchedHitBox += OnTouchedHitBox;
+            _player.TouchedStarLevel += OnTouchedStarLevel;
+            _player.TouchedStarExperience += OnTouchedStarExperience;
+            _player.TouchedTeleport += OnTouchedTeleport;
+            _player.TouchedKey += OnTouchedKey;
+            _player.TouchedLock += OnTouchedLock;
+            _player.ChangedPosition += OnChangedPosition;
+            _shopManager.ChangedCharacter += _player.OnChangedCharacter;
+        }
 
         _levelManager.ActivatedLevel += OnActivatedLevel;
-        _shopManager.ChangedCharacter += _player.OnChangedCharacter;
         _shopManager.ChangedIdSelectedItems += OnChangedIdSelectedItems;
         _shopManager.ClickedButton += _gamePlayManagerUI.OnClickedButton;
     }
@@ -42,22 +53,40 @@ public class GamePlayManager : MonoBehaviour
         _gamePlayManagerUI.CannedShowNextLevel -= OnCannedShowNextLevel;
         _gamePlayManagerUI.ChoisenCardReward -= OnChoisenCardRewardView;
         _gamePlayManagerUI.CompletedLevel -= OnCompletedLevel;
+        _gamePlayManagerUI.ClickedButtonBackMenu -= OnClickedButtonBackMenu;
 
-        _player.TouchedHitBox -= OnTouchedHitBox;
-        _player.TouchedStarLevel -= OnTouchedStarLevel;
-        _player.TouchedStarExperience -= OnTouchedStarExperience;
-        _player.TouchedKey -= OnTouchedKey;
-        _player.TouchedLock -= OnTouchedLock;
-        _player.TouchedTeleport -= OnTouchedTeleport;
-        _player.ChangedPosition -= OnChangedPosition;
+        if (_player != null)
+        {
+            _player.TouchedHitBox -= OnTouchedHitBox;
+            _player.TouchedStarLevel -= OnTouchedStarLevel;
+            _player.TouchedStarExperience -= OnTouchedStarExperience;
+            _player.TouchedKey -= OnTouchedKey;
+            _player.TouchedLock -= OnTouchedLock;
+            _player.TouchedTeleport -= OnTouchedTeleport;
+            _player.ChangedPosition -= OnChangedPosition;
+            _shopManager.ChangedCharacter -= _player.OnChangedCharacter;
+        }
 
         _levelManager.ActivatedLevel -= OnActivatedLevel;
-        _shopManager.ChangedCharacter -= _player.OnChangedCharacter;
         _shopManager.ChangedIdSelectedItems -= OnChangedIdSelectedItems;
         _shopManager.ClickedButton -= _gamePlayManagerUI.OnClickedButton;
     }
 
-    private void Start() => _saveGame.LoadAll(this);
+    public void SetBaseValues(Player player, SoundManager soundManager, SaveGame saveGame)
+    {
+        _soundManager = soundManager;
+        _saveGame = saveGame;
+        _player = player;
+
+        _player.TouchedHitBox += OnTouchedHitBox;
+        _player.TouchedStarLevel += OnTouchedStarLevel;
+        _player.TouchedStarExperience += OnTouchedStarExperience;
+        _player.TouchedTeleport += OnTouchedTeleport;
+        _player.TouchedKey += OnTouchedKey;
+        _player.TouchedLock += OnTouchedLock;
+        _player.ChangedPosition += OnChangedPosition;
+        _shopManager.ChangedCharacter += _player.OnChangedCharacter;
+    }
 
     public void SetLoadingValues(int experience, int numberLevel, List<int> openedIdItems,
                                  List<int> selectedIdItems, List<int> showedIdItems)
@@ -66,12 +95,18 @@ public class GamePlayManager : MonoBehaviour
 
         _player.SetValue(name, GetItemsById(openedIdItems), GetItemsById(selectedIdItems));
         _levelManager.SetLoadingValue(numberLevel, experience);
-        _shopManager.SetValue(_allItems);
-        _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience, _countReward);
-        _soundManager.PlaySound(SoundManager.TypeSound.GameMusic);
+        _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience, 
+                                         _countReward, _tutorials);
+        _shopManager.SetValue(_allItems, _tutorials);
         _cloudsManager.StartMoveClouds();
+    }
+
+    public void PlayGame(int numberLevel)
+    {
         _levelManager.ActivateLevel(numberLevel);
     }
+
+    #endregion
 
     #region ----- ActionGame -----
 
@@ -119,6 +154,8 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnChangedPosition() => _soundManager.PlaySound(SoundManager.TypeSound.UseStep);
 
+    private void OnClickedButtonBackMenu() => OnClickedBackMenu?.Invoke();
+
     #endregion
 
     #region ----- ActionAfterTouchedElements -----
@@ -126,7 +163,7 @@ public class GamePlayManager : MonoBehaviour
     private void OnTouchedHitBox()
     {
         _levelManager.UpdateLevel();
-        _gamePlayManagerUI.ReloadLevel(_levelManager.CurrentLevel.Number);
+        _gamePlayManagerUI.ReloadLevel();
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedHitBox);
     }
 
@@ -149,7 +186,7 @@ public class GamePlayManager : MonoBehaviour
     private void OnTouchedLock()
     {
         _levelManager.UpdateLevel();
-        _gamePlayManagerUI.ReloadLevel(_levelManager.CurrentLevel.Number);
+        _gamePlayManagerUI.ReloadLevel();
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedCloseLock);
     }
 

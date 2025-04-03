@@ -11,15 +11,19 @@ public class GamePlayManagerUI : MonoBehaviour
     [SerializeField] private RewardManagerUI _rewardManagerUI;
     [SerializeField] private GameButtonManagerUI _gameButtonManagerUI;
     [SerializeField] private StepManagerUI _stepManagerUI;
-    [SerializeField] private TutorialManagerUI _tutorialManagerUI;
     [Space]
     [SerializeField] private float _timeWaitShowNextLevel = 3;
+    [SerializeField] private int _countAttemptByShowTutrial = 3;
 
+    private List<Tutorial> _tutorials;
     private SoundManager _soundManager;
     private int _countReward;
+    private int _levelNumber;
+    private int _currentAttempt;
 
     public event UnityAction CannedShowNextLevel;
     public event UnityAction CompletedLevel;
+    public event UnityAction ClickedButtonBackMenu;
     public event UnityAction<Item> ChoisenCardReward;
     public event UnityAction<List<Vector3>> CannedMovePlayer;
 
@@ -29,6 +33,8 @@ public class GamePlayManagerUI : MonoBehaviour
         _gameButtonManagerUI.ClickedButtonArrow += OnClickedButtonArrow;
         _gameButtonManagerUI.ClickedButtonResetStep += OnClickedButtonResetStep;
         _gameButtonManagerUI.ClickedButtonPlay += OnClickedButtonPlay;
+        _gameButtonManagerUI.ClickedButtonBackMenu += OnClickedButtonBackMenu;
+        _gameButtonManagerUI.ClickedButtonLamp += OnClickedButtonLamp;
 
         _switchLevelManagerUI.CloudsFilledScene += OnCloudsFilledScene;
 
@@ -43,6 +49,8 @@ public class GamePlayManagerUI : MonoBehaviour
         _gameButtonManagerUI.ClickedButtonArrow -= OnClickedButtonArrow;
         _gameButtonManagerUI.ClickedButtonResetStep -= OnClickedButtonResetStep;
         _gameButtonManagerUI.ClickedButtonPlay -= OnClickedButtonPlay;
+        _gameButtonManagerUI.ClickedButtonBackMenu -= OnClickedButtonBackMenu;
+        _gameButtonManagerUI.ClickedButtonLamp -= OnClickedButtonLamp;
 
         _switchLevelManagerUI.CloudsFilledScene -= OnCloudsFilledScene;
 
@@ -51,36 +59,49 @@ public class GamePlayManagerUI : MonoBehaviour
         _rewardManagerUI.MovedWaitBigBoxReward -= OnMovedWaitBigBoxReward;
     }
 
-    public void SetStartValue(SoundManager soundManager, Level level, List<Item> items, int experience, int countReward)
+    public void SetStartValue(SoundManager soundManager, Level level, List<Item> items, int experience, int countReward, 
+                              List<Tutorial> tutorials)
     {
         _soundManager = soundManager;
         _countReward = countReward;
-
+        _tutorials = tutorials;
         _rewardManagerUI.SetValue(items, experience);
-        _tutorialManagerUI.SetValue(_gameButtonManagerUI.ArrowLeft, _gameButtonManagerUI.ArrowRight, _gameButtonManagerUI.ArrowDown,
+
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].SetButtonsGame(_gameButtonManagerUI.ArrowLeft, _gameButtonManagerUI.ArrowRight, _gameButtonManagerUI.ArrowDown,
                                     _gameButtonManagerUI.ArrowUp, _gameButtonManagerUI.ResetStepButton, _gameButtonManagerUI.StartSteps,
-                                    level);
+                                    _gameButtonManagerUI.ShopButton, _gameButtonManagerUI.BackMenuButton, _gameButtonManagerUI.LampButton,
+                                    _gameButtonManagerUI.BackShopButton, level);
+        }
     }
 
     #region ----- Stages Game -----
 
     public void StartLevel(int numberLevel)
     {
+        _levelNumber = numberLevel;
         _stepManagerUI.ResetSteps();
         _gameButtonManagerUI.ActivateActionButton(true);
-        _tutorialManagerUI.SetNextLevel(numberLevel);
+        TryUseTutorialSteps(numberLevel);
     }
 
-    public void ReloadLevel(int numberLevel)
+    public void ReloadLevel()
     {
+        _currentAttempt++;
         _stepManagerUI.ResetSteps();
         _gameButtonManagerUI.ActivateActionButton(true);
-        _tutorialManagerUI.SetNextLevel(numberLevel);
+        TryUseTutorialSteps(_levelNumber);
+
+        if (_currentAttempt == _countAttemptByShowTutrial)
+            _gameButtonManagerUI.ActivateButtonLamp(true);
     }
 
     public void EndLevel(bool isActivateReward)
     {
+        _currentAttempt = 0;
         _gameButtonManagerUI.ActivateActionButton(false);
+        ResetTutorial();
 
         if (isActivateReward)
             ActivateReward();
@@ -106,6 +127,7 @@ public class GamePlayManagerUI : MonoBehaviour
         ChoisenCardReward?.Invoke(item);
 
         StartCoroutine(ShowWinPanel(false));
+        TryUseTutorialShop(item);
     }
 
     private void OnCloudsFilledScene() => CannedShowNextLevel?.Invoke();
@@ -113,6 +135,38 @@ public class GamePlayManagerUI : MonoBehaviour
     private void OnOpenedBigBoxReward() => _soundManager.PlaySound(SoundManager.TypeSound.OpenRewardBox);
 
     private void OnMovedWaitBigBoxReward() => _soundManager.PlaySound(SoundManager.TypeSound.MoveRewardBox);
+
+    private void TryUseTutorialSteps(int numberLevel)
+    {
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].TryActivateTutorialSteps(numberLevel);
+        }
+    }
+
+    private void TurnTutorial(bool isTurn)
+    {
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].TurnTutorial(isTurn);
+        }
+    }
+
+    private void ResetTutorial()
+    {
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].DeactivateTutorialSteps();
+        }
+    }
+
+    private void TryUseTutorialShop(Item item)
+    {
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].TryActivateTutorialShop(_levelNumber, item);
+        }
+    }
 
     private IEnumerator ShowWinPanel(bool isShowSmile)
     {
@@ -132,10 +186,9 @@ public class GamePlayManagerUI : MonoBehaviour
 
     private void OnClickedButtonPlay()
     {
-        _tutorialManagerUI.StopActions();
         _soundManager.PlaySound(SoundManager.TypeSound.ClickButtonPlay);
 
-        if (_stepManagerUI.GetDirections().Count > 0)
+        if (_stepManagerUI.CountActiveDirections > 0)
             Invoke(nameof(CanMove), 0.1f);
     }
 
@@ -150,15 +203,30 @@ public class GamePlayManagerUI : MonoBehaviour
     private void OnClickedButtonArrow(Vector3 direction)
     {
         _stepManagerUI.OnClickedButtonArrow(direction);
-        _tutorialManagerUI.ClickedButton(direction);
+
+        for (int i = 0; i < _tutorials.Count; i++) { _tutorials[i].ClickedButtonArrow(direction); }
+
         OnClickedButton();
     }
 
     private void OnClickedButtonResetStep()
     {
         _stepManagerUI.OnClickedButtonResetStep();
-        _tutorialManagerUI.ClickedButton(Vector3.zero);
+
+        for (int i = 0; i < _tutorials.Count; i++) { _tutorials[i].ClickedButtonArrow(Vector3.zero); }
+
         OnClickedButton();
+    }
+
+    private void OnClickedButtonBackMenu() { OnClickedButton(); ClickedButtonBackMenu?.Invoke(); }
+
+    private void OnClickedButtonLamp()
+    {
+        OnClickedButton();
+        TurnTutorial(true);
+        TryUseTutorialSteps(_levelNumber);
+
+        _gameButtonManagerUI.ActivateButtonLamp(false);
     }
 
     #endregion

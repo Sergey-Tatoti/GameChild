@@ -5,9 +5,10 @@ public class Level : MonoBehaviour
 {
     [SerializeField] private StarLevel _starLevel;
     [SerializeField] private LevelInfo _levelInfo;
-    [Header("Если на уровнях есть ключи и замки: ")]
+    [Header("Если на уровнях есть ключи, замки, стрелки: ")]
     [SerializeField] private List<GameKey> _keys;
     [SerializeField] private List<Lock> _locks;
+    [SerializeField] private List<TutorialArrow> _tutorialArrows;
 
 
     public int Number => _levelInfo.Number;
@@ -28,6 +29,17 @@ public class Level : MonoBehaviour
 
         ActivatorKey();
         ActivatorLock();
+    }
+
+    public void ShowArrow(bool isShow, int index, Vector2 direction)
+    {
+        if (_tutorialArrows.Count > 0)
+            _tutorialArrows[index].ShowArrow(isShow, direction);
+    }
+
+    public void HideAllArrows()
+    {
+        for (int i = 0; i < _tutorialArrows.Count; i++) { _tutorialArrows[i].gameObject.SetActive(false); }
     }
 
     private void ActivatorKey()

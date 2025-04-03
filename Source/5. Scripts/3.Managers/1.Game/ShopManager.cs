@@ -27,11 +27,11 @@ public class ShopManager : MonoBehaviour
         _shopManagerUI.ClickedButtonShowScrollView -= OnClickedButtonShowScrollView;
     }
 
-    public void SetValue(List<Item> items)
+    public void SetValue(List<Item> items, List<Tutorial> tutorials)
     {
         _items = items;
 
-        _shopManagerUI.SetValue(items, _shopCardViewPrefab);
+        _shopManagerUI.SetValue(items, _shopCardViewPrefab, tutorials);
 
         SetSelectedItems(items);
         _shopManagerUI.UpdateShopCards(_items);

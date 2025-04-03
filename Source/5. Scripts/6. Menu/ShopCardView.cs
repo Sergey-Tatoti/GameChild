@@ -18,6 +18,7 @@ public class ShopCardView : MonoBehaviour
     private bool _isSelect;
 
     public Item item => _item;
+    public Button ButtonCard => _buttonCard;
 
     public event UnityAction<ShopCardView> ClickedButtonCard;
 

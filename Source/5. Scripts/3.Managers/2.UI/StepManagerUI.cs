@@ -12,6 +12,8 @@ public class StepManagerUI : MonoBehaviour
 
     private List<Vector3> _directions = new List<Vector3>();
 
+    public int CountActiveDirections => _directions.Count;
+
     #region ----- TryAddNewStep -----
     public void OnClickedButtonArrow(Vector3 direction)
     {

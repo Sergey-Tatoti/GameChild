@@ -64,7 +64,7 @@ public class StarLevel : GameElement
 
     private void SetPointMovePieces()
     {
-        Vector3 rightCenterScreenPoint = new Vector3(Screen.width, Screen.height / 2, 0);
+        Vector3 rightCenterScreenPoint = new Vector3(Screen.width, Screen.height, 0);
 
         _pointMovePieces = Camera.main.ScreenToWorldPoint(rightCenterScreenPoint);
         _pointMovePieces.z = 0; // Установка Z координаты в 0, если это 2D

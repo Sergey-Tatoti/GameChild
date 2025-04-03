@@ -1,22 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ScrollViewShop : MonoBehaviour
 {
     [SerializeField] private ItemInfo.Type _typeShop;
+    [Space]
+    [SerializeField] private Button _buttonShop;
     [SerializeField] private Button _buttonArrowUp;
     [SerializeField] private Button _buttonArrowDown;
+    [Space]
+    [SerializeField] private GameObject _container;
+    [SerializeField] private GameObject _panelShop;
     [SerializeField] private Image _imageMarkNewItem;
+    [Space]
     [SerializeField] private Scrollbar _scrollbar;
     [SerializeField] private Scrollbar _scrollbarButaforia;
-    [SerializeField] private GameObject _container;
     [Space]
     [SerializeField] private float _stepChangeScroll = 0.2f;
     [SerializeField] private Sprite _spriteCloseCard;
+    [SerializeField] private Sprite _choosedButtonSprite;
+    [SerializeField] private Sprite _standartButtonSprite;
+
+    public ItemInfo.Type TypeShop => _typeShop;
+    public Button ButtonShop => _buttonShop;
+
+    public event UnityAction<ScrollViewShop> ClickedButtonShop;
+
 
     private void OnEnable()
     {
+        _buttonShop.onClick.AddListener(() => ClickedButtonShop?.Invoke(this));
         _buttonArrowUp.onClick.AddListener(() => OnClicedButtonArrow(true));
         _buttonArrowDown.onClick.AddListener(() => OnClicedButtonArrow(false));
         _scrollbarButaforia.onValueChanged.AddListener(ChangedValueSlider);
@@ -24,11 +39,18 @@ public class ScrollViewShop : MonoBehaviour
 
     private void OnDisable()
     {
+        _buttonShop.onClick.RemoveListener(() => ClickedButtonShop?.Invoke(this));
         _buttonArrowUp.onClick.RemoveListener(() => OnClicedButtonArrow(true));
         _buttonArrowDown.onClick.RemoveListener(() => OnClicedButtonArrow(false));
         _scrollbarButaforia.onValueChanged.RemoveListener(ChangedValueSlider);
 
         _scrollbarButaforia.value = 1;
+    }
+
+    public void ShowPanel(bool isShow)
+    {
+        _panelShop.SetActive(isShow);
+        GetComponent<Image>().sprite = isShow ? _choosedButtonSprite : _standartButtonSprite;
     }
 
     public ShopCardView CreateItems(Item item, ShopCardView shopCardPrefab)
