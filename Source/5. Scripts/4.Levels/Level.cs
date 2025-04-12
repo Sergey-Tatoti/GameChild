@@ -9,14 +9,22 @@ public class Level : MonoBehaviour
     [SerializeField] private List<GameKey> _keys;
     [SerializeField] private List<Lock> _locks;
     [SerializeField] private List<TutorialArrow> _tutorialArrows;
+    [Space]
+    [SerializeField] private bool _isLocked;
+    [SerializeField] private bool _isCompleted;
+    [SerializeField] private bool _isDonate;
 
 
+    public bool IsLocked => _isLocked;
+    public bool IsCompleted => _isCompleted;
+    public bool IsDonate => _isDonate;
     public int Number => _levelInfo.Number;
     public int CountExperience => _levelInfo.CountExperience;
     public float PlayerStepHorizontal => _levelInfo.PlayerStepHorizontal;
     public float PlayerStepVertical => _levelInfo.PlayerStepVertical;
     public bool IsRightPlayerDirection => _levelInfo.IsRightPlayerDirection;
     public Vector3 PlayerStartPosition => _levelInfo.PlayerStartPosition;
+    public LevelInfo.LevelType LevelType => _levelInfo.Type;
 
     public void SetValue()
     {

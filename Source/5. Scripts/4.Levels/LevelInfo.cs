@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class LevelInfo : ScriptableObject
 {
+    public enum LevelType { Regular, FisrtBonus, FirstPortal, FisrtKey }
+
+    [Tooltip("Тип уровня")]
+    [SerializeField] private LevelType _levelType;
     [Tooltip("Номер уровня")]
     [SerializeField] private int _number = 1;
     [Tooltip("Кол-во опыта за прохождение")]
@@ -16,6 +20,7 @@ public class LevelInfo : ScriptableObject
     [Tooltip("Куда смотрит игрок вначале уровня")]
     [SerializeField] private bool _isRightPlayerDirection;
 
+    public LevelType Type => _levelType;
     public int Number => _number;
     public int CountExperience => _countExperience;
     public float PlayerStepHorizontal => _playerStepHorizontal;

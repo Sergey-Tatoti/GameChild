@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a856bd15339fb5459e197dcfbbcd979, type: 3}
   m_Name: KeyGreen
   m_EditorClassIdentifier: 
-  _spriteItem: {fileID: -14114146, guid: 0b5d9bc3e6f8be8478679d0fb3487c5e, type: 3}
+  _spriteItem: {fileID: 21300000, guid: 582ad2eaf357aff4ca7acdf4036f8d4d, type: 3}

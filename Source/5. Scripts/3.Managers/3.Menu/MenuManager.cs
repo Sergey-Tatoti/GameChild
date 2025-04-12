@@ -3,6 +3,7 @@ using UnityEngine.Events;
 
 public class MenuManager : MonoBehaviour
 {
+    [SerializeField] private MapManager _mapManager;
     [SerializeField] private MenuManagerUI _menuManagerUI;
 
     private Player _player;
