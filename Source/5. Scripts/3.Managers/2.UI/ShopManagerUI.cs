@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class ShopManagerUI : MonoBehaviour
 {
     [SerializeField] private List<Avatar> _avatars;
+    [SerializeField] private List<GroundAvatar> _groundsAvatar;
+    [SerializeField] private GameObject _markButtonShop;
+    [Space]
     [SerializeField] private ScrollViewShop _scrollViewCharacter;
     [SerializeField] private ScrollViewShop _scrollViewTop;
     [SerializeField] private ScrollViewShop _scrollViewGlasses;
     [SerializeField] private ScrollViewShop _scrollViewCap;
-    [SerializeField] private ScrollViewShop _scrollViewRamka;
-    [SerializeField] private ScrollViewShop _scrollViewGround;
 
     private List<ScrollViewShop> _scrollViewShops;
     private List<ShopCardView> _shopCardViews = new List<ShopCardView>();
@@ -19,12 +21,19 @@ public class ShopManagerUI : MonoBehaviour
 
     public event UnityAction<Item, Item> ChangedSelectedItem;
     public event UnityAction ClickedButtonShowScrollView;
+    public event UnityAction ClickedButtonHideScrollView;
+    public event UnityAction<int> ChangedGroundAvatar;
 
     #region ----- Initialize ------
 
     private void OnEnable()
     {
-        if(_scrollViewShops != null)
+        for (int i = 0; i < _groundsAvatar.Count; i++)
+        {
+            _groundsAvatar[i].ClickedButtonGround += OnClickedButtonGround;
+        }
+
+        if (_scrollViewShops != null)
         {
             for (int i = 0; i < _scrollViewShops.Count; i++)
             {
@@ -43,6 +52,11 @@ public class ShopManagerUI : MonoBehaviour
 
     private void OnDisable()
     {
+        for (int i = 0; i < _groundsAvatar.Count; i++)
+        {
+            _groundsAvatar[i].ClickedButtonGround -= OnClickedButtonGround;
+        }
+
         if (_scrollViewShops != null)
         {
             for (int i = 0; i < _scrollViewShops.Count; i++)
@@ -60,7 +74,7 @@ public class ShopManagerUI : MonoBehaviour
         }
     }
 
-    public void SetValue(List<Item> items, ShopCardView shopCardView, List<Tutorial> tutorials)
+    public void SetValue(List<Item> items, ShopCardView shopCardView, List<Tutorial> tutorials, int indexGroundAvatar)
     {
         _tutorials = tutorials;
         _scrollViewCharacter.ShowPanel(true);
@@ -68,13 +82,15 @@ public class ShopManagerUI : MonoBehaviour
         FillListShopCards(items, shopCardView);
         FillTutorials();
 
-        _scrollViewShops = new List<ScrollViewShop>() { _scrollViewCap, _scrollViewCharacter, _scrollViewGlasses, 
-                                                        _scrollViewGround, _scrollViewRamka, _scrollViewTop };
+        _scrollViewShops = new List<ScrollViewShop>() { _scrollViewCap, _scrollViewCharacter, 
+                                                        _scrollViewGlasses,  _scrollViewTop };
 
         for (int i = 0; i < _scrollViewShops.Count; i++)
         {
             _scrollViewShops[i].ClickedButtonShop += OnClickedButtonShop;
         }
+
+        OnClickedButtonGround(_groundsAvatar[indexGroundAvatar].TypeGround);
     }
 
     private void FillTutorials()
@@ -82,8 +98,7 @@ public class ShopManagerUI : MonoBehaviour
         for (int i = 0; i < _tutorials.Count; i++)
         {
             _tutorials[i].SetButtonsShop(_scrollViewCharacter.ButtonShop, _scrollViewGlasses.ButtonShop,
-                                         _scrollViewTop.ButtonShop, _scrollViewRamka.ButtonShop,
-                                         _scrollViewGround.ButtonShop, _scrollViewCap.ButtonShop, _shopCardViews);
+                                         _scrollViewTop.ButtonShop, _scrollViewCap.ButtonShop, _shopCardViews);
         }
     }
 
@@ -116,6 +131,8 @@ public class ShopManagerUI : MonoBehaviour
         {
             _avatars[i].ShowMarkNewitem(isShowMark);
         }
+
+        _markButtonShop.SetActive(isShowMark);
     }
 
     #endregion
@@ -132,8 +149,6 @@ public class ShopManagerUI : MonoBehaviour
         _scrollViewTop.UpdateViewShop(items);
         _scrollViewCap.UpdateViewShop(items);
         _scrollViewGlasses.UpdateViewShop(items);
-        _scrollViewRamka.UpdateViewShop(items);
-        _scrollViewGround.UpdateViewShop(items);
     }
 
     private void UpdatesShopCardViews()
@@ -166,14 +181,6 @@ public class ShopManagerUI : MonoBehaviour
                     break;
                 case ItemInfo.Type.Hat:
                     shopCard = _scrollViewCap.CreateItems(items[i], shopCardView);
-                    _shopCardViews.Add(shopCard);
-                    break;
-                case ItemInfo.Type.Ramka:
-                    shopCard = _scrollViewRamka.CreateItems(items[i], shopCardView);
-                    _shopCardViews.Add(shopCard);
-                    break;
-                case ItemInfo.Type.Ground:
-                    shopCard = _scrollViewGround.CreateItems(items[i], shopCardView);
                     _shopCardViews.Add(shopCard);
                     break;
             }
@@ -222,6 +229,25 @@ public class ShopManagerUI : MonoBehaviour
         }
 
         ClickedButtonShowScrollView?.Invoke();
+    }
+
+    private void OnClickedButtonGround(GroundAvatar.TypeAvatarGround typeGround)
+    {
+        for (int i = 0; i < _groundsAvatar.Count; i++)
+        {
+            _groundsAvatar[i].ShowGround(false);
+
+            if (_groundsAvatar[i].TypeGround == typeGround)
+            {
+                for (int j = 0; j < _avatars.Count; j++)
+                {
+                    _avatars[j].SetGround(_groundsAvatar[i].SpriteGround, _groundsAvatar[i].SpriteRamka);
+                }
+
+                _groundsAvatar[i].ShowGround(true);
+                ChangedGroundAvatar?.Invoke(i);
+            }
+        }
     }
 
     private void OnClickedButtonCard(ShopCardView shopCardView) => ChangeCurrentShopCard(shopCardView);

@@ -10,12 +10,9 @@ public class Level : MonoBehaviour
     [SerializeField] private List<Lock> _locks;
     [SerializeField] private List<TutorialArrow> _tutorialArrows;
     [Space]
-    [SerializeField] private bool _isLocked;
     [SerializeField] private bool _isCompleted;
     [SerializeField] private bool _isDonate;
 
-
-    public bool IsLocked => _isLocked;
     public bool IsCompleted => _isCompleted;
     public bool IsDonate => _isDonate;
     public int Number => _levelInfo.Number;
@@ -26,10 +23,14 @@ public class Level : MonoBehaviour
     public Vector3 PlayerStartPosition => _levelInfo.PlayerStartPosition;
     public LevelInfo.LevelType LevelType => _levelInfo.Type;
 
-    public void SetValue()
+    public void SetValue(bool isCompleted)
     {
         _starLevel.SetValue();
+
+        _isCompleted = isCompleted;
     }
+
+    public void CompleteLevel() => _isCompleted = true;
 
     public void UpdateLevel()
     {

@@ -59,7 +59,7 @@ public class GamePlayManagerUI : MonoBehaviour
         _rewardManagerUI.MovedWaitBigBoxReward -= OnMovedWaitBigBoxReward;
     }
 
-    public void SetStartValue(SoundManager soundManager, Level level, List<Item> items, int experience, int countReward, 
+    public void SetStartValue(SoundManager soundManager, Level level, List<Item> items, int experience, int countReward,
                               List<Tutorial> tutorials)
     {
         _soundManager = soundManager;
@@ -83,6 +83,8 @@ public class GamePlayManagerUI : MonoBehaviour
         _levelNumber = numberLevel;
         _stepManagerUI.ResetSteps();
         _gameButtonManagerUI.ActivateActionButton(true);
+
+        UpdateTutorials();
         TryUseTutorialSteps(numberLevel);
     }
 
@@ -144,6 +146,14 @@ public class GamePlayManagerUI : MonoBehaviour
         }
     }
 
+    private void UpdateTutorials()
+    {
+        for (int i = 0; i < _tutorials.Count; i++)
+        {
+            _tutorials[i].UpdateTutorial();
+        }
+    }
+
     private void TurnTutorial(bool isTurn)
     {
         for (int i = 0; i < _tutorials.Count; i++)
@@ -164,7 +174,8 @@ public class GamePlayManagerUI : MonoBehaviour
     {
         for (int i = 0; i < _tutorials.Count; i++)
         {
-            _tutorials[i].TryActivateTutorialShop(_levelNumber, item);
+            if (_tutorials[i].Type == Tutorial.TypeTutorial.Shop)
+                _tutorials[i].TryActivateTutorialShop(_levelNumber, item);
         }
     }
 
@@ -189,7 +200,10 @@ public class GamePlayManagerUI : MonoBehaviour
         _soundManager.PlaySound(SoundManager.TypeSound.ClickButtonPlay);
 
         if (_stepManagerUI.CountActiveDirections > 0)
+        {
+            _gameButtonManagerUI.ActivateActionButton(false);
             Invoke(nameof(CanMove), 0.1f);
+        }
     }
 
     private void CanMove() => CannedMovePlayer?.Invoke(_stepManagerUI.GetDirections());

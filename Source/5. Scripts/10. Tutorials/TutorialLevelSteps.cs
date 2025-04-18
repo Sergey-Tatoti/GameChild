@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialLevelSteps : Tutorial
 {
@@ -46,13 +47,23 @@ public class TutorialLevelSteps : Tutorial
             _chosenSteps.RemoveAt(_chosenSteps.Count - 1);
             _currentStepIndex--;
             _level.ShowArrow(false, _currentStepIndex, direction);
+            ActivateArrows(true);
         }
         else if (direction != Vector3.zero)
         {
             _chosenSteps.Add(direction);
             _level.ShowArrow(true, _currentStepIndex, direction);
             _currentStepIndex++;
+            ActivateArrows(_chosenSteps.Count < _stepsLevel.Count);
         }
+    }
+
+    private void ActivateArrows(bool isActivate)
+    {
+        _buttonAnimationUp.GetComponent<Button>().interactable = isActivate;
+        _buttonAnimationDown.GetComponent<Button>().interactable = isActivate;
+        _buttonAnimationRight.GetComponent<Button>().interactable = isActivate;
+        _buttonAnimationLeft.GetComponent<Button>().interactable = isActivate;
     }
 
     private void StartShineButton()

@@ -9,17 +9,29 @@ public class SaveGame : MonoBehaviour
 
     #region SaveValue
 
-    public void SaveExperience(int experience, int level) => SaveManager.Save(SaveKey, GetSaveExperienceSnapshot(experience, level));
+    public void SaveExperience(int experience) => SaveManager.Save(SaveKey, GetSaveExperienceSnapshot(experience));
+
+    public void SaveNewLevel(int numberLevel) => SaveManager.Save(SaveKey, GetSaveNewLevelSnapshot(numberLevel));
+
+    public void SaveCompleteLevel(int numberLevel) => SaveManager.Save(SaveKey, GetSaveCompleteLevelSnapshot(numberLevel));
 
     public void SaveIdOpenedItem(int id) => SaveManager.Save(SaveKey, GetSaveIdOpenItemSnapshot(id));
+
+    public void SaveIndexGroundAvatarItem(int index) => SaveManager.Save(SaveKey, GetSaveIndexGroundAvatarSnapshot(index));
 
     public void SaveIdSelectedItems(List<int> id) => SaveManager.Save(SaveKey, GetSaveIdSelectedItemsSnapshot(id));
 
     public void SaveIdShowedItems(int id) => SaveManager.Save(SaveKey, GetSaveIdShowedItemsSnapshot(id));
 
-    SaveData.GameData GetSaveExperienceSnapshot(int experience, int level) { _data.Experience = experience; _data.Level = level; return _data; }
+    SaveData.GameData GetSaveExperienceSnapshot(int experience) { _data.Experience = experience; return _data; }
+
+    SaveData.GameData GetSaveNewLevelSnapshot(int numberLevel) { _data.NumberNewLevel = numberLevel; return _data; }
+
+    SaveData.GameData GetSaveCompleteLevelSnapshot(int numberLevel) { _data.NumbersCompleteLevels.Add(numberLevel); return _data; }
 
     SaveData.GameData GetSaveIdOpenItemSnapshot(int id) { _data.IdOpenItems.Add(id); return _data; }
+
+    SaveData.GameData GetSaveIndexGroundAvatarSnapshot(int index) { _data.IndexGroundAvatar = index; return _data; }
 
     SaveData.GameData GetSaveIdSelectedItemsSnapshot(List<int> id) { _data.IdSelectedItems = id; return _data; }
 
@@ -28,14 +40,12 @@ public class SaveGame : MonoBehaviour
     #endregion
 
     #region LoadeAll
-    public void LoadAll(GamePlayManager gamePlayManager, MenuManager menuManager)
+    public void LoadAll(MainManager mainManager)
     {
         _data = SaveManager.Load<SaveData.GameData>(SaveKey);
 
-        gamePlayManager.SetLoadingValues(_data.Experience, _data.Level, _data.IdOpenItems, 
-                                         _data.IdSelectedItems, _data.IdShowedItems);
-
-        menuManager.SetLoadingValues(_data.Level);
+        mainManager.SetLoadingValues(_data.Experience, _data.NumbersCompleteLevels, _data.NumberNewLevel, _data.IdOpenItems, 
+                                         _data.IdSelectedItems, _data.IdShowedItems, _data.IndexGroundAvatar);
     }
     #endregion
 }

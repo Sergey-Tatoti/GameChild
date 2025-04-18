@@ -13,8 +13,6 @@ public class TutorialShop : Tutorial
     {
         base.ActivateTutroialReward(item);
 
-        Debug.Log("WOOOORK");
-
         _buttonAnimationShop.SetShining(true);
         _buttonShop = _buttonAnimationShop.GetComponent<Button>();
         _buttonShop.interactable = true;
@@ -33,6 +31,21 @@ public class TutorialShop : Tutorial
         base.DeactivateTutroialReward();
 
         _buttonItem.GetComponent<ButtonAnimation>().SetShining(false);
+    }
+
+    public override void UpdateTutorial()
+    {
+        base.UpdateTutorial();
+
+        if (_isActivate == true)
+        {
+            _buttonAnimationLeft.GetComponent<Button>().interactable = false;
+            _buttonAnimationRight.GetComponent<Button>().interactable = false;
+            _buttonAnimationUp.GetComponent<Button>().interactable = false;
+            _buttonAnimationDown.GetComponent<Button>().interactable = false;
+            _buttonAnimationStart.GetComponent<Button>().interactable = false;
+            _buttonAnimationBackStep.GetComponent<Button>().interactable = false;
+        }
     }
 
     private void ShowButtonPanel()
@@ -64,12 +77,6 @@ public class TutorialShop : Tutorial
                 break;
             case ItemInfo.Type.Top:
                 button = _buttonAnimationTopShop.GetComponent<Button>();
-                break;
-            case ItemInfo.Type.Ramka:
-                button = _buttonAnimationRamkaShop.GetComponent<Button>();
-                break;
-            case ItemInfo.Type.Ground:
-                button = _buttonAnimationGroundShop.GetComponent<Button>();
                 break;
 
         }

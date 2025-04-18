@@ -29,11 +29,21 @@ public class MainManager : MonoBehaviour
     {
         _gamePlayManager.SetBaseValues(_player, _soundManager, _saveGame);
         _menuManager.SetBaseValues(_player, _soundManager, _saveGame);
-        _saveGame.LoadAll(_gamePlayManager, _menuManager);
+        _saveGame.LoadAll(this);
+
+        SwitchPanels(true);
+    }
+
+    public void SetLoadingValues(int experience, List<int> numbersCompleteLevels, int numberNewLevel, List<int> openedIdItems,
+                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar)
+    {
+        _gamePlayManager.SetLoadingValues(experience, numbersCompleteLevels, numberNewLevel, openedIdItems, selectedIdItems, showedIdItems, indexGroundAvatar);
+        _menuManager.SetLoadingValues(_gamePlayManager.Levels, _gamePlayManager.NewLevel);
     }
 
     private void OnClickedBackMenu()
     {
+        _menuManager.ShowCrossRoad(_gamePlayManager.CurrentLevel, _gamePlayManager.NewLevel);
         SwitchPanels(true);
     }
 

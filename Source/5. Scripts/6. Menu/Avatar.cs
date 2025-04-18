@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class Avatar : MonoBehaviour
 {
@@ -58,13 +59,13 @@ public class Avatar : MonoBehaviour
 
                 _imageHat.gameObject.SetActive(item.SpriteItem != null);
                 break;
-            case ItemInfo.Type.Ramka:
-                _imageRamka.sprite = item.SpriteItem;
-                break;
-            case ItemInfo.Type.Ground:
-                _imageGround.sprite = item.SpriteItem;
-                break;
         }
+    }
+    
+    public void SetGround(Sprite spriteGround, Sprite spriteRamka)
+    {
+        _imageRamka.sprite = spriteRamka;
+        _imageGround.sprite = spriteGround;
     }
 
     public void ShowMarkNewitem(bool isShow)

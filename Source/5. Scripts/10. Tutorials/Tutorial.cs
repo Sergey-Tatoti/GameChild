@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public abstract class Tutorial : MonoBehaviour
 {
-    public enum TypeTutorial { Step, Shop}
+    public enum TypeTutorial { Step, Shop }
 
     [SerializeField] protected TypeTutorial _typeTutorial;
     [SerializeField] protected Level _level;
@@ -25,8 +25,6 @@ public abstract class Tutorial : MonoBehaviour
     protected ButtonAnimation _buttonAnimationCharacterShop;
     protected ButtonAnimation _buttonAnimationGlassesShop;
     protected ButtonAnimation _buttonAnimationTopShop;
-    protected ButtonAnimation _buttonAnimationRamkaShop;
-    protected ButtonAnimation _buttonAnimationGroundShop;
     protected ButtonAnimation _buttonAnimationCapShop;
 
     protected List<Button> _allButtons;
@@ -34,6 +32,8 @@ public abstract class Tutorial : MonoBehaviour
 
     protected bool _isActivate;
     private int _currentLevel;
+
+    public TypeTutorial Type => _typeTutorial;
 
     #region ----- SetValues -----
 
@@ -53,24 +53,20 @@ public abstract class Tutorial : MonoBehaviour
         _buttonAnimationBackMenu = backMenu.GetComponent<ButtonAnimation>();
         _buttonAnimationLamp = lamp.GetComponent<ButtonAnimation>();
 
-        _allButtons = new List<Button> { arrowLeft, arrowRight, arrowDown, arrowUp, resetStep, startSteps, shop, 
+        _allButtons = new List<Button> { arrowLeft, arrowRight, arrowDown, arrowUp, resetStep, startSteps, shop,
                                          backMenu, lamp, backShop};
     }
 
-    public void SetButtonsShop(Button character, Button glasses, Button top, Button ramka, Button ground, Button cap, 
-                               List<ShopCardView> shopCardViews)
+    public void SetButtonsShop(Button character, Button glasses, Button top,  Button cap, List<ShopCardView> shopCardViews)
     {
         _shopCardViews = shopCardViews;
 
         _buttonAnimationCharacterShop = character.GetComponent<ButtonAnimation>();
         _buttonAnimationGlassesShop = glasses.GetComponent<ButtonAnimation>();
         _buttonAnimationTopShop = top.GetComponent<ButtonAnimation>();
-        _buttonAnimationRamkaShop = ramka.GetComponent<ButtonAnimation>();
-        _buttonAnimationGroundShop = ground.GetComponent<ButtonAnimation>();
         _buttonAnimationCapShop = cap.GetComponent<ButtonAnimation>();
 
-        _allButtons.Add(character); _allButtons.Add(glasses); _allButtons.Add(top);
-        _allButtons.Add(ramka); _allButtons.Add(ground); _allButtons.Add(cap);
+        _allButtons.Add(character); _allButtons.Add(glasses); _allButtons.Add(top); _allButtons.Add(cap);
     }
 
     public void TurnTutorial(bool isActivate)
@@ -105,7 +101,7 @@ public abstract class Tutorial : MonoBehaviour
 
     public virtual void ActivateTutroialSteps()
     {
-
+        ChangeInterectableButtons(true);
     }
 
     public virtual void DeactivateTutorialSteps()
@@ -114,6 +110,11 @@ public abstract class Tutorial : MonoBehaviour
     }
 
     public virtual void ShowButtonArrows(Vector3 direction)
+    {
+
+    }
+
+    public virtual void UpdateTutorial()
     {
 
     }
@@ -143,6 +144,7 @@ public abstract class Tutorial : MonoBehaviour
 
     public virtual void DeactivateTutroialReward()
     {
+        _isActivate = false;
         ChangeInterectableButtons(true);
     }
 

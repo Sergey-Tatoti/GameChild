@@ -32,9 +32,10 @@ public class TestActionsGame : MonoBehaviour
     public void SwitchNextLevel(bool isNext)
     {
         LevelsManager levelsManager = FindFirstObjectByType<LevelsManager>();
+        GamePlayManager gamePlayManager = FindFirstObjectByType<GamePlayManager>();
         SaveGame saveGame = FindFirstObjectByType<SaveGame>();
         int numberLevel = levelsManager.CurrentLevel.Number;
-        int maxNumberLevel = levelsManager._levels[levelsManager._levels.Count - 1].Number;
+        int maxNumberLevel = gamePlayManager.Levels[gamePlayManager.Levels.Count - 1].Number;
 
         if (isNext)
             numberLevel++;
@@ -46,7 +47,8 @@ public class TestActionsGame : MonoBehaviour
         else if (numberLevel == maxNumberLevel + 1)
             numberLevel = 1;
 
-        saveGame.SaveExperience(0, numberLevel);
+        saveGame.SaveExperience(0);
+        saveGame.SaveNewLevel(numberLevel);
         SceneManager.LoadScene(0);
     }
 }

@@ -63,12 +63,7 @@ public class GameButtonManagerUI : MonoBehaviour
         _arrowDownButton.onClick.RemoveListener(() => ClickedButtonArrow.Invoke(Vector3.down));
     }
 
-    private void ClickedPlay()
-    {
-        ActivateActionButton(false);
-
-        ClickedButtonPlay?.Invoke();
-    }
+    private void ClickedPlay() => ClickedButtonPlay?.Invoke();
 
     public void ActivateActionButton(bool isActivate)
     {

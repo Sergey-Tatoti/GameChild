@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3273d917c6c2a47849b74885f50ec9, type: 3}
   m_Name: LevelInfo_16
   m_EditorClassIdentifier: 
-  _levelType: 0
+  _levelType: 2
   _number: 11
   _countExperience: 50
   _playerStepHorizontal: 1.642

@@ -42,7 +42,7 @@ public class MenuManagerUI : MonoBehaviour
         _buttonMusics.onClick.RemoveListener(ClickedButtonMusic);
     }
 
-    private void ShowPanelCrossRoad(bool isShow) => _panelCrossRoad.SetActive(isShow);
+    public void ShowPanelCrossRoad(bool isShow) => _panelCrossRoad.SetActive(isShow);
 
     private void ClickedButtonPlayGame()
     {

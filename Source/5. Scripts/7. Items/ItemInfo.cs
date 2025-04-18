@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ItemInfo : ScriptableObject
 {
-    public enum Type { Character, Hat, Glasses, Top, Ramka, Ground }
+    public enum Type { Character, Hat, Glasses, Top}
 
     [SerializeField] private int _id;
     [SerializeField] private Type _type;

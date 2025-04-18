@@ -11,12 +11,17 @@ public class GamePlayManager : MonoBehaviour
     [SerializeField] public List<Item> _allItems; // public для тестов
     [SerializeField] private List<Tutorial> _tutorials;
 
+    public List<Level> Levels;
+
     private Player _player;
     private SaveGame _saveGame;
     private SoundManager _soundManager;
 
     private int _countReward = 3;
     private int _maxExperience = 100;
+
+    public Level CurrentLevel => _levelManager.CurrentLevel;
+    public Level NewLevel => _levelManager.NewLevel;
 
     public event UnityAction OnClickedBackMenu;
 
@@ -45,6 +50,7 @@ public class GamePlayManager : MonoBehaviour
         _levelManager.ActivatedLevel += OnActivatedLevel;
         _shopManager.ChangedIdSelectedItems += OnChangedIdSelectedItems;
         _shopManager.ClickedButton += _gamePlayManagerUI.OnClickedButton;
+        _shopManager.ChangedGroundAvatar += OnChangedGroundAvatar;
     }
 
     private void OnDisable()
@@ -70,6 +76,7 @@ public class GamePlayManager : MonoBehaviour
         _levelManager.ActivatedLevel -= OnActivatedLevel;
         _shopManager.ChangedIdSelectedItems -= OnChangedIdSelectedItems;
         _shopManager.ClickedButton -= _gamePlayManagerUI.OnClickedButton;
+        _shopManager.ChangedGroundAvatar -= OnChangedGroundAvatar;
     }
 
     public void SetBaseValues(Player player, SoundManager soundManager, SaveGame saveGame)
@@ -88,22 +95,22 @@ public class GamePlayManager : MonoBehaviour
         _shopManager.ChangedCharacter += _player.OnChangedCharacter;
     }
 
-    public void SetLoadingValues(int experience, int numberLevel, List<int> openedIdItems,
-                                 List<int> selectedIdItems, List<int> showedIdItems)
+    public void SetLoadingValues(int experience, List<int> numbersCompleteLevels, int numberNewLevel, List<int> openedIdItems,
+                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar)
     {
         SetInfoItemsById(openedIdItems, selectedIdItems, showedIdItems);
 
         _player.SetValue(name, GetItemsById(openedIdItems), GetItemsById(selectedIdItems));
-        _levelManager.SetLoadingValue(numberLevel, experience);
-        _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience, 
+        _levelManager.SetLoadingValue(Levels, numbersCompleteLevels, numberNewLevel, experience);
+        _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience,
                                          _countReward, _tutorials);
-        _shopManager.SetValue(_allItems, _tutorials);
+        _shopManager.SetValue(_allItems, _tutorials, indexGroundAvatar);
         _cloudsManager.StartMoveClouds();
     }
 
     public void PlayGame(int numberLevel)
     {
-        _levelManager.ActivateLevel(numberLevel);
+        _levelManager.ChooseLevel(numberLevel);
     }
 
     #endregion
@@ -112,8 +119,12 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnCompletedLevel()
     {
+        if (!_levelManager.CurrentLevel.IsCompleted)
+            _saveGame.SaveCompleteLevel(_levelManager.CurrentLevel.Number);
+
         _levelManager.ChangeNextLevel();
-        _saveGame.SaveExperience(_levelManager.Experience, _levelManager.CurrentLevel.Number);
+        _saveGame.SaveExperience(_levelManager.Experience);
+        _saveGame.SaveNewLevel(_levelManager.NewLevel.Number);
     }
 
     private void OnActivatedLevel(float stepHorizontal, float stepVertical, Vector3 startPosition, bool isRightDirection)
@@ -138,7 +149,7 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnCannedMovePlayer(List<Vector3> directions) => _player.UseMove(directions);
 
-    private void OnCannedShowNextLevel() => _levelManager.ActivateLevel(_levelManager.CurrentLevel.Number + 1);
+    private void OnCannedShowNextLevel() => _levelManager.ActivateLevel(_levelManager.CurrentLevel.Number);
 
     private void OnChangedIdSelectedItems(List<int> idSelectedItems, Item item)
     {
@@ -155,6 +166,8 @@ public class GamePlayManager : MonoBehaviour
     private void OnChangedPosition() => _soundManager.PlaySound(SoundManager.TypeSound.UseStep);
 
     private void OnClickedButtonBackMenu() => OnClickedBackMenu?.Invoke();
+
+    private void OnChangedGroundAvatar(int index) => _saveGame.SaveIndexGroundAvatarItem(index);
 
     #endregion
 

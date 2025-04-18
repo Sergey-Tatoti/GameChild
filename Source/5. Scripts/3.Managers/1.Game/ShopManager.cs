@@ -14,24 +14,27 @@ public class ShopManager : MonoBehaviour
     public event UnityAction<Item> ChangedCharacter;
     public event UnityAction<List<int>, Item> ChangedIdSelectedItems;
     public event UnityAction ClickedButton;
+    public event UnityAction<int> ChangedGroundAvatar;
 
     private void OnEnable()
     {
         _shopManagerUI.ChangedSelectedItem += OnChangedSelectedItem;
         _shopManagerUI.ClickedButtonShowScrollView += OnClickedButtonShowScrollView;
+        _shopManagerUI.ChangedGroundAvatar += OnChangedGroundAvatar;
     }
 
     private void OnDisable()
     {
         _shopManagerUI.ChangedSelectedItem -= OnChangedSelectedItem;
         _shopManagerUI.ClickedButtonShowScrollView -= OnClickedButtonShowScrollView;
+        _shopManagerUI.ChangedGroundAvatar -= OnChangedGroundAvatar;
     }
 
-    public void SetValue(List<Item> items, List<Tutorial> tutorials)
+    public void SetValue(List<Item> items, List<Tutorial> tutorials, int indexGround)
     {
         _items = items;
 
-        _shopManagerUI.SetValue(items, _shopCardViewPrefab, tutorials);
+        _shopManagerUI.SetValue(items, _shopCardViewPrefab, tutorials, indexGround);
 
         SetSelectedItems(items);
         _shopManagerUI.UpdateShopCards(_items);
@@ -45,6 +48,8 @@ public class ShopManager : MonoBehaviour
     }
 
     private void OnClickedButtonShowScrollView() => ClickedButton?.Invoke();
+
+    private void OnChangedGroundAvatar(int indexGround) => ChangedGroundAvatar?.Invoke(indexGround);
 
     #region ----- SelectedItems -----
 
