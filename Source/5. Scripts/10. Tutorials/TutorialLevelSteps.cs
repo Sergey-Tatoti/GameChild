@@ -53,6 +53,12 @@ public class TutorialLevelSteps : Tutorial
         {
             _chosenSteps.Add(direction);
             _level.ShowArrow(true, _currentStepIndex, direction);
+
+            if (direction != _stepsLevel[_currentStepIndex])
+            {
+                _level.ShowArrow(false, _currentStepIndex, direction);
+            }
+
             _currentStepIndex++;
             ActivateArrows(_chosenSteps.Count < _stepsLevel.Count);
         }

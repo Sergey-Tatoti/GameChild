@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3273d917c6c2a47849b74885f50ec9, type: 3}
   m_Name: LevelInfo3
   m_EditorClassIdentifier: 
+  _levelType: 0
   _number: 3
-  _countExperience: 50
+  _countExperience: 0
   _playerStepHorizontal: 1.642
   _playerStepVertical: 1.386
   _playerStartPosition: {x: -2.88, y: -0.120000005, z: 0}

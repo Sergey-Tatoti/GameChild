@@ -81,6 +81,7 @@ public class GamePlayManagerUI : MonoBehaviour
     public void StartLevel(int numberLevel)
     {
         _levelNumber = numberLevel;
+        _currentAttempt = 0;
         _stepManagerUI.ResetSteps();
         _gameButtonManagerUI.ActivateActionButton(true);
 
@@ -232,7 +233,13 @@ public class GamePlayManagerUI : MonoBehaviour
         OnClickedButton();
     }
 
-    private void OnClickedButtonBackMenu() { OnClickedButton(); ClickedButtonBackMenu?.Invoke(); }
+    private void OnClickedButtonBackMenu()
+    {
+        OnClickedButton();
+        TurnTutorial(false);
+        _gameButtonManagerUI.ActivateButtonLamp(false);
+        ClickedButtonBackMenu?.Invoke();
+    }
 
     private void OnClickedButtonLamp()
     {

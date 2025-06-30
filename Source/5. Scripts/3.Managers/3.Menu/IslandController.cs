@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -58,7 +59,7 @@ public class IslandController : MonoBehaviour
 
         TempDonate(levels.Count);
         TryShowNextIsliand(newLevel);
-        SetCurrentIsland(GetIslandByNumber(newLevel.Number));
+        StartCoroutine(SetCurrentIsland(GetIslandByNumber(newLevel.Number)));
     }
 
     private void RenderIsland(Level level, int numberCurrentLevel)
@@ -119,8 +120,9 @@ public class IslandController : MonoBehaviour
             RenderIsland(_levels[i], currentLevel.Number);
         }
 
+
         TryShowNextIsliand(newLevel);
-        SetCurrentIsland(GetIslandByNumber(currentLevel.Number));
+        StartCoroutine(SetCurrentIsland(GetIslandByNumber(currentLevel.Number)));
     }
 
     private void TryShowNextIsliand(Level newLevel)
@@ -142,8 +144,9 @@ public class IslandController : MonoBehaviour
         }
     }
 
-    private void SetCurrentIsland(Island island)
+    private IEnumerator SetCurrentIsland(Island island)
     {
+        yield return null;
         _currentIsland = island;
         _currentIsland.Render(_spriteBlank, true, false);
         _avatar.transform.position = island.transform.position;
@@ -151,8 +154,8 @@ public class IslandController : MonoBehaviour
 
     private void OnClickedIsland(Island island)
     {
-        SetCurrentIsland(island);
-        ClickedIsland?.Invoke(_currentIsland.Number);
+        StartCoroutine(SetCurrentIsland(island));
+        ClickedIsland?.Invoke(island.Number);
     }
 
     #endregion

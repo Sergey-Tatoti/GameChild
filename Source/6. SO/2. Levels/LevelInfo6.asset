@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LevelInfo6
   m_EditorClassIdentifier: 
   _levelType: 0
-  _number: 5
-  _countExperience: 50
+  _number: 6
+  _countExperience: 0
   _playerStepHorizontal: 1.642
   _playerStepVertical: 1.386
   _playerStartPosition: {x: -1.97, y: 1.6, z: 0}

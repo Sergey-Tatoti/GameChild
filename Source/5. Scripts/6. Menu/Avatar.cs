@@ -1,11 +1,9 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class Avatar : MonoBehaviour
 {
-    [SerializeField] private Image _imageMarkNewItem;
     [Header("Ёлементы персонажа")]
     [SerializeField] private Image _imageCharacterHead;
     [SerializeField] private Image _imageCharacterBody;
@@ -68,9 +66,9 @@ public class Avatar : MonoBehaviour
         _imageGround.sprite = spriteGround;
     }
 
-    public void ShowMarkNewitem(bool isShow)
-    {
-        _imageMarkNewItem.gameObject.SetActive(isShow);
-        _imageMarkNewItem.GetComponent<ButtonAnimation>().SetShining(isShow);
-    }
+    //public void ShowMarkNewitem(bool isShow)
+    //{
+    //    _imageMarkNewItem.gameObject.SetActive(isShow);
+    //    _imageMarkNewItem.GetComponent<ButtonAnimation>().SetShining(isShow);
+    //}
 }

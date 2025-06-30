@@ -127,10 +127,10 @@ public class ShopManagerUI : MonoBehaviour
 
     private void ShowMarkNewItemAvatars(bool isShowMark)
     {
-        for (int i = 0; i < _avatars.Count; i++)
-        {
-            _avatars[i].ShowMarkNewitem(isShowMark);
-        }
+        //for (int i = 0; i < _avatars.Count; i++)
+        //{
+        //    _avatars[i].ShowMarkNewitem(isShowMark);
+        //}
 
         _markButtonShop.SetActive(isShowMark);
     }

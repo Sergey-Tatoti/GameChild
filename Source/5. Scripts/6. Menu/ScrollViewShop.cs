@@ -50,7 +50,7 @@ public class ScrollViewShop : MonoBehaviour
     public void ShowPanel(bool isShow)
     {
         _panelShop.SetActive(isShow);
-        GetComponent<Image>().sprite = isShow ? _choosedButtonSprite : _standartButtonSprite;
+        _buttonShop.GetComponent<Image>().sprite = isShow ? _choosedButtonSprite : _standartButtonSprite;
     }
 
     public ShopCardView CreateItems(Item item, ShopCardView shopCardPrefab)
