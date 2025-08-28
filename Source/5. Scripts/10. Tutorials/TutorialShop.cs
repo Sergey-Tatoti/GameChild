@@ -31,33 +31,33 @@ public class TutorialShop : Tutorial
         base.DeactivateTutroialReward();
 
         _buttonItem.GetComponent<ButtonAnimation>().SetShining(false);
+        _buttonItem.onClick.RemoveListener(DeactivateTutroialReward);
     }
 
-    public override void UpdateTutorial()
+    public override void UpdateTutorial(int level)
     {
-        base.UpdateTutorial();
+        base.UpdateTutorial(level);
 
-        if (_isActivate == true)
-        {
-            _buttonAnimationLeft.GetComponent<Button>().interactable = false;
-            _buttonAnimationRight.GetComponent<Button>().interactable = false;
-            _buttonAnimationUp.GetComponent<Button>().interactable = false;
-            _buttonAnimationDown.GetComponent<Button>().interactable = false;
-            _buttonAnimationStart.GetComponent<Button>().interactable = false;
-            _buttonAnimationBackStep.GetComponent<Button>().interactable = false;
-        }
+        _buttonAnimationLeft.GetComponent<Button>().interactable = !_isActivate;
+        _buttonAnimationRight.GetComponent<Button>().interactable = !_isActivate;
+        _buttonAnimationUp.GetComponent<Button>().interactable = !_isActivate;
+        _buttonAnimationDown.GetComponent<Button>().interactable = !_isActivate;
+        _buttonAnimationStart.GetComponent<Button>().interactable = !_isActivate;
+        _buttonAnimationBackStep.GetComponent<Button>().interactable = !_isActivate;
     }
 
     private void ShowButtonPanel()
     {
         _buttonAnimationShop.SetShining(false);
         _buttonPanelShop.GetComponent<ButtonAnimation>().SetShining(true);
+        _buttonShop.onClick.RemoveListener(ShowButtonPanel);
     }
 
     private void ShowButtonItem()
     {
         _buttonPanelShop.GetComponent<ButtonAnimation>().SetShining(false);
         _buttonItem.GetComponent<ButtonAnimation>().SetShining(true);
+        _buttonPanelShop.onClick.RemoveListener(ShowButtonItem);
     }
 
     private Button GetButtonPanelShop(Item item)

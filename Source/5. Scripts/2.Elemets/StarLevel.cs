@@ -6,6 +6,7 @@ public class StarLevel : GameElement
 {
     [Header("Разместить изначально кусочки в те места, куда они должны придти и размер")]
     [SerializeField] private List<SpriteRenderer> _piecesStar;
+    [SerializeField] private Lock _lock;
     [SerializeField] private SpriteRenderer _shine;
     [SerializeField] private float _durationMovePiecesPositions;
     [SerializeField] private float _durationMovePiecesPoint;
@@ -32,8 +33,8 @@ public class StarLevel : GameElement
 
     public void Activate()
     {
-        _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 0);
-        _shine.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 0);
+        ShowShineStar(false);
+        TryActivateLock(true);
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
@@ -43,8 +44,8 @@ public class StarLevel : GameElement
 
     public void ResetStar()
     {
-        _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 1);
-        _shine.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, 1);
+        ShowShineStar(true);   
+        TryActivateLock(true);
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
@@ -68,5 +69,19 @@ public class StarLevel : GameElement
 
         _pointMovePieces = Camera.main.ScreenToWorldPoint(rightCenterScreenPoint);
         _pointMovePieces.z = 0; // Установка Z координаты в 0, если это 2D
+    }
+
+    private void ShowShineStar(bool isShow)
+    {
+        int alphaColor = isShow ? 1 : 0;
+
+        _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, alphaColor);
+        _shine.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, alphaColor);
+    }
+
+    private void TryActivateLock(bool isActivate)
+    {
+        if (_lock != null)
+            _lock.gameObject.SetActive(isActivate);
     }
 }

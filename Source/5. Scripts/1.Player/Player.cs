@@ -166,6 +166,10 @@ public class Player : MonoBehaviour
             _playerInventory.ResetKey();
             TouchedLock?.Invoke();
         }
+        else
+        {
+            locked.gameObject.SetActive(false);
+        }
     }
 
     private void OnTouchedStarExperience(int experience) => TouchedStarExperience?.Invoke(experience);

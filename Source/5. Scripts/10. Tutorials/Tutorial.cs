@@ -114,9 +114,10 @@ public abstract class Tutorial : MonoBehaviour
 
     }
 
-    public virtual void UpdateTutorial()
+    public virtual void UpdateTutorial(int level)
     {
-
+        if (level == _level.Number)
+            _isActivate = false;
     }
 
 

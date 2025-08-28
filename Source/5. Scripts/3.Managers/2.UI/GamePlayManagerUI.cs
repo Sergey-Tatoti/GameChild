@@ -85,7 +85,7 @@ public class GamePlayManagerUI : MonoBehaviour
         _stepManagerUI.ResetSteps();
         _gameButtonManagerUI.ActivateActionButton(true);
 
-        UpdateTutorials();
+        UpdateTutorials(numberLevel);
         TryUseTutorialSteps(numberLevel);
     }
 
@@ -147,11 +147,11 @@ public class GamePlayManagerUI : MonoBehaviour
         }
     }
 
-    private void UpdateTutorials()
+    private void UpdateTutorials(int level)
     {
         for (int i = 0; i < _tutorials.Count; i++)
         {
-            _tutorials[i].UpdateTutorial();
+            _tutorials[i].UpdateTutorial(level);
         }
     }
 
