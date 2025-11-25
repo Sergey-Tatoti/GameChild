@@ -23,6 +23,8 @@ public class SaveGame : MonoBehaviour
 
     public void SaveIdShowedItems(int id) => SaveManager.Save(SaveKey, GetSaveIdShowedItemsSnapshot(id));
 
+    public void SaveCompleteAllLevels(bool isComplete) => SaveManager.Save(SaveKey, GetSaveCompleteLevelsSnapshot(isComplete));
+
     SaveData.GameData GetSaveExperienceSnapshot(int experience) { _data.Experience = experience; return _data; }
 
     SaveData.GameData GetSaveNewLevelSnapshot(int numberLevel) { _data.NumberNewLevel = numberLevel; return _data; }
@@ -37,6 +39,8 @@ public class SaveGame : MonoBehaviour
 
     SaveData.GameData GetSaveIdShowedItemsSnapshot(int id) { _data.IdShowedItems.Add(id); return _data; }
 
+    SaveData.GameData GetSaveCompleteLevelsSnapshot(bool isComplete) { _data.IsCompleteLevels = isComplete; return _data; }
+
     #endregion
 
     #region LoadeAll
@@ -45,7 +49,7 @@ public class SaveGame : MonoBehaviour
         _data = SaveManager.Load<SaveData.GameData>(SaveKey);
 
         mainManager.SetLoadingValues(_data.Experience, _data.NumbersCompleteLevels, _data.NumberNewLevel, _data.IdOpenItems, 
-                                         _data.IdSelectedItems, _data.IdShowedItems, _data.IndexGroundAvatar);
+                                     _data.IdSelectedItems, _data.IdShowedItems, _data.IndexGroundAvatar, _data.IsCompleteLevels);
     }
     #endregion
 }

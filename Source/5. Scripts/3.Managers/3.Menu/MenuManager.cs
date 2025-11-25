@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private IslandController _islandController;
+    [SerializeField] private RewardCompleteLevels _rewardCompleteLevels;
     [SerializeField] private MenuManagerUI _menuManagerUI;
 
     private Player _player;
@@ -36,10 +37,13 @@ public class MenuManager : MonoBehaviour
         _player = player;
     }
 
-    public void SetLoadingValues(List<Level> levels, Level newLevel)
+    public void SetLoadingValues(List<Level> levels, Level newLevel, bool isCompleteLevels)
     {
         _currentNumberLevel = newLevel.Number;
         _islandController.RenderAllIslands(levels, newLevel);
+
+        if (isCompleteLevels)
+            _rewardCompleteLevels.OpenFinishReward();
     }
 
     public void ShowCrossRoad(Level currentLevel, Level newLevel)
@@ -48,6 +52,11 @@ public class MenuManager : MonoBehaviour
 
         _menuManagerUI.ShowPanelCrossRoad(true);
         _islandController.CompletedLevel(currentLevel, newLevel);
+    }
+
+    public void ShowRewardFinishLevels()
+    {
+        _rewardCompleteLevels.ActivateRewardPanel();
     }
 
     private void OnClickedButtonPlay()

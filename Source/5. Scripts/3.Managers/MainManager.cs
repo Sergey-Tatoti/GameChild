@@ -16,13 +16,15 @@ public class MainManager : MonoBehaviour
     private void OnEnable()
     {
         _menuManager.ClickedButtonPlayGame += OnClickedPlayGame;
-        _gamePlayManager.OnClickedBackMenu += OnClickedBackMenu;
+        _gamePlayManager.ClickedBackMenu += OnClickedBackMenu;
+        _gamePlayManager.CompletedOnceLevels += OnCompletedOnceLevels;
     }
 
     private void OnDisable()
     {
         _menuManager.ClickedButtonPlayGame -= OnClickedPlayGame;
-        _gamePlayManager.OnClickedBackMenu -= OnClickedBackMenu;
+        _gamePlayManager.ClickedBackMenu -= OnClickedBackMenu;
+        _gamePlayManager.CompletedOnceLevels -= OnCompletedOnceLevels;
     }
 
     private void Start()
@@ -35,16 +37,23 @@ public class MainManager : MonoBehaviour
     }
 
     public void SetLoadingValues(int experience, List<int> numbersCompleteLevels, int numberNewLevel, List<int> openedIdItems,
-                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar)
+                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar, bool isCompleteLevels)
     {
-        _gamePlayManager.SetLoadingValues(experience, numbersCompleteLevels, numberNewLevel, openedIdItems, selectedIdItems, showedIdItems, indexGroundAvatar);
-        _menuManager.SetLoadingValues(_gamePlayManager.Levels, _gamePlayManager.NewLevel);
+        _gamePlayManager.SetLoadingValues(experience, numbersCompleteLevels, numberNewLevel, openedIdItems, selectedIdItems, showedIdItems, 
+                                          indexGroundAvatar, isCompleteLevels);
+        _menuManager.SetLoadingValues(_gamePlayManager.Levels, _gamePlayManager.NewLevel, isCompleteLevels);
     }
 
     private void OnClickedBackMenu()
     {
         _menuManager.ShowCrossRoad(_gamePlayManager.CurrentLevel, _gamePlayManager.NewLevel);
         SwitchPanels(true);
+    }
+
+    private void OnCompletedOnceLevels()
+    {
+        OnClickedBackMenu();
+        _menuManager.ShowRewardFinishLevels();
     }
 
     private void OnClickedPlayGame(int numberLevel)

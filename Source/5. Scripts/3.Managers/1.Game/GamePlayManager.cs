@@ -19,11 +19,13 @@ public class GamePlayManager : MonoBehaviour
 
     private int _countReward = 3;
     private int _maxExperience = 100;
+    private bool _isCompleteLevels = false;
 
     public Level CurrentLevel => _levelManager.CurrentLevel;
     public Level NewLevel => _levelManager.NewLevel;
 
-    public event UnityAction OnClickedBackMenu;
+    public event UnityAction ClickedBackMenu;
+    public event UnityAction CompletedOnceLevels;
 
     #region ----- Initialize -----
 
@@ -48,6 +50,7 @@ public class GamePlayManager : MonoBehaviour
         }
 
         _levelManager.ActivatedLevel += OnActivatedLevel;
+        _levelManager.CompletedFinishLevel += OnCompletedFinishLevel;
         _shopManager.ChangedIdSelectedItems += OnChangedIdSelectedItems;
         _shopManager.ClickedButton += _gamePlayManagerUI.OnClickedButton;
         _shopManager.ChangedGroundAvatar += OnChangedGroundAvatar;
@@ -74,6 +77,7 @@ public class GamePlayManager : MonoBehaviour
         }
 
         _levelManager.ActivatedLevel -= OnActivatedLevel;
+        _levelManager.CompletedFinishLevel -= OnCompletedFinishLevel;
         _shopManager.ChangedIdSelectedItems -= OnChangedIdSelectedItems;
         _shopManager.ClickedButton -= _gamePlayManagerUI.OnClickedButton;
         _shopManager.ChangedGroundAvatar -= OnChangedGroundAvatar;
@@ -96,10 +100,11 @@ public class GamePlayManager : MonoBehaviour
     }
 
     public void SetLoadingValues(int experience, List<int> numbersCompleteLevels, int numberNewLevel, List<int> openedIdItems,
-                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar)
+                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar, bool isCompleteLevels)
     {
         SetInfoItemsById(openedIdItems, selectedIdItems, showedIdItems);
 
+        _isCompleteLevels = isCompleteLevels;
         _player.SetValue(name, GetItemsById(openedIdItems), GetItemsById(selectedIdItems));
         _levelManager.SetLoadingValue(Levels, numbersCompleteLevels, numberNewLevel, experience);
         _gamePlayManagerUI.SetStartValue(_soundManager, _levelManager.CurrentLevel, _allItems, _levelManager.Experience,
@@ -125,6 +130,14 @@ public class GamePlayManager : MonoBehaviour
         _levelManager.ChangeNextLevel();
         _saveGame.SaveExperience(_levelManager.Experience);
         _saveGame.SaveNewLevel(_levelManager.NewLevel.Number);
+    }
+
+    private void OnCompletedFinishLevel()
+    {
+        Debug.Log("work");
+
+        if (!_isCompleteLevels)
+            CompletedOnceLevels?.Invoke();
     }
 
     private void OnActivatedLevel(float stepHorizontal, float stepVertical, Vector3 startPosition, bool isRightDirection)
@@ -165,7 +178,7 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnChangedPosition() => _soundManager.PlaySound(SoundManager.TypeSound.UseStep);
 
-    private void OnClickedButtonBackMenu() => OnClickedBackMenu?.Invoke();
+    private void OnClickedButtonBackMenu() => ClickedBackMenu?.Invoke();
 
     private void OnChangedGroundAvatar(int index) => _saveGame.SaveIndexGroundAvatarItem(index);
 

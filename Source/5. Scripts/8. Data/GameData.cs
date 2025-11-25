@@ -8,6 +8,7 @@ namespace SaveData
         public int Experience;
         public int NumberNewLevel = 1;
         public int IndexGroundAvatar = 0;
+        public bool IsCompleteLevels = false;
         public List<int> NumbersCompleteLevels = new List<int>();
 
         public List<int> IdOpenItems = new List<int> { 1, 2, 3, 4, 5, 6};

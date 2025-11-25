@@ -17,5 +17,5 @@ MonoBehaviour:
   _countExperience: 50
   _playerStepHorizontal: 1.642
   _playerStepVertical: 1.386
-  _playerStartPosition: {x: -0.36, y: 1.56, z: 0}
+  _playerStartPosition: {x: -2.17, y: 2.92, z: 0}
   _isRightPlayerDirection: 1

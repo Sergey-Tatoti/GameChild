@@ -13,9 +13,11 @@ public class LevelsManager : MonoBehaviour
 
     public Level CurrentLevel => _currentLevel;
     public Level NewLevel => _newLevel;
+    public int CountLevels => _levels.Count;
     public int Experience => _experience;
 
     public event UnityAction<float, float, Vector3, bool> ActivatedLevel;
+    public event UnityAction CompletedFinishLevel;
 
     public void SetLoadingValue(List<Level> levels, List<int> numbersCompleteLevels, int numberNewLevel, int experience)
     {
@@ -51,6 +53,9 @@ public class LevelsManager : MonoBehaviour
 
         _lastLevel = _currentLevel;
         _currentLevel = GetLevelByNumberLevel(_currentLevel.Number + 1);
+
+        if (_lastLevel != null && _lastLevel.LevelType == LevelInfo.LevelType.Final)
+            CompletedFinishLevel?.Invoke();
 
         if (!_currentLevel.IsCompleted)
             _newLevel = _currentLevel;

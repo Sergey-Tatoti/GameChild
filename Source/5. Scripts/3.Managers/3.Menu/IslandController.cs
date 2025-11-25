@@ -22,7 +22,6 @@ public class IslandController : MonoBehaviour
     [SerializeField] private Sprite _spriteKeyLocked;
 
     [SerializeField] private Sprite _spriteDonate;
-    [SerializeField] private Sprite _spriteFinal;
 
     private List<Level> _levels;
     private Island _currentIsland;
@@ -89,8 +88,8 @@ public class IslandController : MonoBehaviour
                 GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
                 break;
             case LevelInfo.LevelType.Final:
-                sprite = isUnlock ? _spriteFinal : _spriteFinal;
-                GetIslandByNumber(number).Render(sprite, isUnlock, false);
+                sprite = isUnlock ? _spriteRegular : _spriteLockedRegular;
+                GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
                 break;
         }
 
@@ -105,8 +104,6 @@ public class IslandController : MonoBehaviour
             _islands[i].SetNumber(i);
             _islands[i].Render(_spriteDonate, false, false);
         }
-
-        _islands[_islands.Count - 1].Render(_spriteFinal, false, false);
     }
 
     #endregion
