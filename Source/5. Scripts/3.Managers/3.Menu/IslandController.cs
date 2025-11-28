@@ -91,6 +91,12 @@ public class IslandController : MonoBehaviour
                 sprite = isUnlock ? _spriteRegular : _spriteLockedRegular;
                 GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
                 break;
+            case LevelInfo.LevelType.Bonus:
+                if(level.IsCompleted)
+                    isUnlock = false;
+                sprite = isUnlock ? _spriteRegular : _spriteLockedRegular;
+                GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
+                break;
         }
 
         if (level.IsDonate)

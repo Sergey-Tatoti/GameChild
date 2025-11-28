@@ -19,6 +19,7 @@ public class GamePlayManager : MonoBehaviour
 
     private int _countReward = 3;
     private int _maxExperience = 100;
+    private int _temporaryExperience;
     private bool _isCompleteLevels = false;
 
     public Level CurrentLevel => _levelManager.CurrentLevel;
@@ -134,8 +135,6 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnCompletedFinishLevel()
     {
-        Debug.Log("work");
-
         if (!_isCompleteLevels)
             CompletedOnceLevels?.Invoke();
     }
@@ -191,6 +190,9 @@ public class GamePlayManager : MonoBehaviour
         _levelManager.UpdateLevel();
         _gamePlayManagerUI.ReloadLevel();
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedHitBox);
+
+        //ChangeExperience(-_temporaryExperience);
+        //_temporaryExperience = 0;
     }
 
     private void OnTouchedStarLevel()
@@ -205,7 +207,8 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnTouchedStarExperience(int experience)
     {
-        ChangeExperience(experience);
+        _temporaryExperience = experience;
+        ChangeExperience(_temporaryExperience);
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedMiniStar);
     }
 
@@ -214,6 +217,9 @@ public class GamePlayManager : MonoBehaviour
         _levelManager.UpdateLevel();
         _gamePlayManagerUI.ReloadLevel();
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedCloseLock);
+
+        //ChangeExperience(-_temporaryExperience);
+        //_temporaryExperience = 0;
     }
 
     private void OnTouchedTeleport() => _soundManager.PlaySound(SoundManager.TypeSound.TouchedTeleport);

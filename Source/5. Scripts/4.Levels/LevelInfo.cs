@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelInfo : ScriptableObject
 {
-    public enum LevelType { Regular, FisrtBonus, FirstPortal, FisrtKey, Final }
+    public enum LevelType { Regular, FisrtBonus, FirstPortal, FisrtKey, Final, Bonus }
 
     [Tooltip("Тип уровня")]
     [SerializeField] private LevelType _levelType;

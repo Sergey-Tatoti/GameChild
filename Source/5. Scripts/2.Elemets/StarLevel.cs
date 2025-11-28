@@ -8,19 +8,36 @@ public class StarLevel : GameElement
     [SerializeField] private List<SpriteRenderer> _piecesStar;
     [SerializeField] private Lock _lock;
     [SerializeField] private SpriteRenderer _shine;
+    [Header("Настройки кусочков звезды")]
     [SerializeField] private float _durationMovePiecesPositions;
     [SerializeField] private float _durationMovePiecesPoint;
     [SerializeField] private float _durationChangeScale;
+    [Header("Настройки кусочков звезды")]
+    [SerializeField] private float _stepMoveStar;
+    [SerializeField] private float _durationMoveStar;
 
     private SpriteRenderer _spriteStar;
     private Vector3 _pointMovePieces;
+    private Vector3 _startPosition;
     private List<Vector3> _postitionsPiecesStar = new List<Vector3>();
     private List<Vector3> _scalesPiecesStar = new List<Vector3>();
+
+    private void OnEnable()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y - _stepMoveStar / 2, transform.position.z);
+        transform.DOMoveY(transform.position.y + _stepMoveStar, _durationMoveStar).SetLoops(-1, LoopType.Yoyo);
+    }
+
+    private void OnDisable()
+    {
+        DOTween.Kill(this);
+    }
 
     public void SetValue()
     {
         _spriteStar = GetComponent<SpriteRenderer>();
-
+        _startPosition = transform.position;
+        
         SetPointMovePieces();
 
         for (int i = 0; i < _piecesStar.Count; i++)
@@ -34,7 +51,6 @@ public class StarLevel : GameElement
     public void Activate()
     {
         ShowShineStar(false);
-        TryActivateLock(true);
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
