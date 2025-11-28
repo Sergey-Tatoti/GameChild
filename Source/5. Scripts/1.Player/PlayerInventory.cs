@@ -140,6 +140,7 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CheckLock(Lock locked)
     {
+        Debug.Log(locked.Key + " " + _gameKey);
         if (_gameKey != null && locked.Key == _gameKey.Key)
             return true;
         else
