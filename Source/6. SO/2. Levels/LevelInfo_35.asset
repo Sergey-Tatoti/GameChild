@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _levelType: 0
   _number: 35
-  _countExperience: 50
+  _countExperience: 40
   _playerStepHorizontal: 1.642
   _playerStepVertical: 1.386
   _playerStartPosition: {x: -2, y: 1.56, z: 0}

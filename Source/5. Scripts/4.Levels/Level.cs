@@ -4,6 +4,7 @@ using UnityEngine;
 public class Level : MonoBehaviour
 {
     [SerializeField] private StarLevel _starLevel;
+    [SerializeField] private List<StarExperience> _starExperiences;
     [SerializeField] private LevelInfo _levelInfo;
     [Header("Если на уровнях есть ключи, замки, стрелки: ")]
     [SerializeField] private List<GameKey> _keys;
@@ -38,6 +39,18 @@ public class Level : MonoBehaviour
 
         ActivatorKey();
         ActivatorLock();
+        ShowStarsExperience();
+    }
+
+    public void ShowStarsExperience()
+    {
+        if (_starExperiences.Count == 0)
+            return;
+
+        for (int i = 0; i < _starExperiences.Count; i++)
+        {
+            _starExperiences[i].gameObject.SetActive(true);
+        }
     }
 
     public void ShowArrow(bool isShow, int index, Vector2 direction)

@@ -191,8 +191,8 @@ public class GamePlayManager : MonoBehaviour
         _gamePlayManagerUI.ReloadLevel();
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedHitBox);
 
-        //ChangeExperience(-_temporaryExperience);
-        //_temporaryExperience = 0;
+        ChangeExperience(-_temporaryExperience);
+        _temporaryExperience = 0;
     }
 
     private void OnTouchedStarLevel()
@@ -218,8 +218,8 @@ public class GamePlayManager : MonoBehaviour
         _gamePlayManagerUI.ReloadLevel();
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedCloseLock);
 
-        //ChangeExperience(-_temporaryExperience);
-        //_temporaryExperience = 0;
+        ChangeExperience(-_temporaryExperience);
+        _temporaryExperience = 0;
     }
 
     private void OnTouchedTeleport() => _soundManager.PlaySound(SoundManager.TypeSound.TouchedTeleport);
