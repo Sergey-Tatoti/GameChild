@@ -14,7 +14,8 @@ public class TilemapLine : MonoBehaviour
     {
         for (int i = 0; i < _tilemapRenderers.Count; i++)
         {
-            _tilemapRenderers[i].sortingOrder += Player.MultiplyOrderInLayer * _orderInLayer;
+            if (_tilemapRenderers[i] != null)
+                _tilemapRenderers[i].sortingOrder += Player.MultiplyOrderInLayer * _orderInLayer;
         }
     }
 }
