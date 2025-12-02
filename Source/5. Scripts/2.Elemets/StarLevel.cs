@@ -17,7 +17,6 @@ public class StarLevel : GameElement
     [SerializeField] private float _durationMoveStar;
 
     private SpriteRenderer _spriteStar;
-    private Vector3 _pointMovePieces;
     private Vector3 _startPosition;
     private List<Vector3> _postitionsPiecesStar = new List<Vector3>();
     private List<Vector3> _scalesPiecesStar = new List<Vector3>();
@@ -37,8 +36,6 @@ public class StarLevel : GameElement
     {
         _spriteStar = GetComponent<SpriteRenderer>();
         _startPosition = transform.position;
-        
-        SetPointMovePieces();
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
@@ -74,17 +71,9 @@ public class StarLevel : GameElement
     {
         piece.transform.DOMove(positionPiece, _durationMovePiecesPositions).OnComplete(() =>
         {
-            piece.transform.DOMove(_pointMovePieces, _durationMovePiecesPoint);
+            piece.transform.DOMove(RewardBoxes.PositionBoxReward, _durationMovePiecesPoint);
             piece.transform.DOScale(0, _durationChangeScale);
         });
-    }
-
-    private void SetPointMovePieces()
-    {
-        Vector3 rightCenterScreenPoint = new Vector3(Screen.width, Screen.height, 0);
-
-        _pointMovePieces = Camera.main.ScreenToWorldPoint(rightCenterScreenPoint);
-        _pointMovePieces.z = 0; // Установка Z координаты в 0, если это 2D
     }
 
     private void ShowShineStar(bool isShow)

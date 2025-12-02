@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class RewardBoxes : MonoBehaviour
 {
+    public static Vector3 PositionBoxReward;
+
     private const string NameAnimationMoveBox = "Move";
     private const string NameAnimationWaitBigBox = "Wait";
     private const string NameAnimationOpenBigBox = "Open";
@@ -44,6 +46,9 @@ public class RewardBoxes : MonoBehaviour
         _animatorBigBoxReward = _bigBoxReward.GetComponent<Animator>();
 
         _endScaleBigRewardBox = _bigBoxReward.transform.localScale;
+
+        Vector2 positionBoxRewardInUI = RectTransformUtility.WorldToScreenPoint(null, _boxRewardButton.transform.position);
+        PositionBoxReward = Camera.main.ScreenToWorldPoint(new Vector3(positionBoxRewardInUI.x, positionBoxRewardInUI.y, Camera.main.nearClipPlane));
     }
 
     public void ActivateBoxesRewards(float durationChangeScaleBox)
