@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static Unity.Collections.AllocatorManager;
 
 public class RewardManagerUI : MonoBehaviour
 {
@@ -20,14 +21,16 @@ public class RewardManagerUI : MonoBehaviour
     [Tooltip("Продложительность движения карты в магазин")][SerializeField] private float _durationMoveCardShop;
     [Tooltip("Продолжительность увлеичения подарка от 0 до end")][SerializeField] private float _durationChangeScaleRewardBox;
     [Tooltip("Задержка после выбора карты, чтобы разглядеть приз")][SerializeField] private float _delayShowCard;
+    [Tooltip("Задержка после выбора карты, чтобы выбрать доп приз")][SerializeField] private float _delayChoiseCardAd;
 
     private List<CardRewardView> _cardRewardViews = new List<CardRewardView>();
     private List<Item> _closedItems = new List<Item>();
+    private List<Item> _choosenItems = new List<Item>();
     private int _countReward;
 
     public event UnityAction OpenedBigBoxReward;
     public event UnityAction MovedWaitBigBoxReward;
-    public event UnityAction<Item> ChoisenCardReward;
+    public event UnityAction<List<Item>> ChoisenCardsReward;
 
     private void OnEnable()
     {
@@ -111,14 +114,25 @@ public class RewardManagerUI : MonoBehaviour
         if (_countReward > 0)
             FillCardViewReward();
         else
-            ActivateCardsReward(false);
+            BlockCloseCardsReward(false);
     }
 
-    private void ActivateCardsReward(bool isActivate)
+    private void BlockCloseCardsReward(bool isBlock)
     {
         for (int i = 0; i < _cardRewardViews.Count; i++)
         {
-            _cardRewardViews[i].BlockButton(isActivate);
+            _cardRewardViews[i].BlockButton(isBlock);
+        }
+    }
+
+    private void ActivateAdCardsReward(bool isActivate, CardRewardView cardRewardView)
+    {
+        BlockCloseCardsReward(false);
+
+        for (int i = 0; i < _cardRewardViews.Count; i++)
+        {
+            if (cardRewardView != _cardRewardViews[i])
+                _cardRewardViews[i].ShowActivateAd(isActivate);
         }
     }
 
@@ -128,11 +142,16 @@ public class RewardManagerUI : MonoBehaviour
 
     private void OnClickedButtonCard(CardRewardView cardRewardView)
     {
+        if (cardRewardView.IsBonusAd)
+        {
+            Debug.Log("SHOW AD");
+        }
+
         _rewardScale.SetScale(0);
         _closedItems.Remove(cardRewardView.Item);
 
-        ActivateCardsReward(true);
-
+        BlockCloseCardsReward(true);
+        StopAllCoroutines();
         StartCoroutine(WaitShowCardView(cardRewardView));
     }
 
@@ -150,6 +169,11 @@ public class RewardManagerUI : MonoBehaviour
 
     private IEnumerator WaitShowCardView(CardRewardView cardRewardView)
     {
+        bool isUseAd = cardRewardView.IsBonusAd;
+
+        _choosenItems.Add(cardRewardView.Item);
+        cardRewardView.ShowActivateAd(false);
+
         yield return new WaitForSeconds(_delayShowCard);
 
         cardRewardView.GetComponent<ButtonAnimation>().ResetAnimation();
@@ -157,11 +181,22 @@ public class RewardManagerUI : MonoBehaviour
 
         cardRewardView.transform.SetParent(_pointMoveCardAfterChoose);
         cardRewardView.transform.DOMove(_pointMoveCardAfterChoose.position, _durationMoveCardShop);
-        cardRewardView.transform.DOScale(0, _durationMoveCardShop).OnComplete(() => ResetCardViews());
+        cardRewardView.transform.DOScale(0, _durationMoveCardShop).OnComplete(() =>
+        {
+            ActivateAdCardsReward(!isUseAd, cardRewardView);
+            StartCoroutine(WaitCloseBoxCardsReward(isUseAd));
+        });
+    }
 
+    private IEnumerator WaitCloseBoxCardsReward(bool isUseAd)
+    {
+        if (!isUseAd)
+            yield return new WaitForSeconds(_delayChoiseCardAd);
+
+        ResetCardViews();
         _rewardBoxes.HideRewards(_durationChangeScaleRewardBox);
 
-        ChoisenCardReward?.Invoke(cardRewardView.Item);
+        ChoisenCardsReward?.Invoke(_choosenItems);
     }
 
     #endregion

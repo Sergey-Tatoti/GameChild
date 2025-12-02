@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Progress;
 
 
 public class GamePlayManagerUI : MonoBehaviour
@@ -39,7 +40,7 @@ public class GamePlayManagerUI : MonoBehaviour
         _switchLevelManagerUI.CloudsFilledScene += OnCloudsFilledScene;
 
         _rewardManagerUI.OpenedBigBoxReward += OnOpenedBigBoxReward;
-        _rewardManagerUI.ChoisenCardReward += OnChoisenCardRewardView;
+        _rewardManagerUI.ChoisenCardsReward += OnChoisenCardRewardView;
         _rewardManagerUI.MovedWaitBigBoxReward += OnMovedWaitBigBoxReward;
     }
 
@@ -55,7 +56,7 @@ public class GamePlayManagerUI : MonoBehaviour
         _switchLevelManagerUI.CloudsFilledScene -= OnCloudsFilledScene;
 
         _rewardManagerUI.OpenedBigBoxReward -= OnOpenedBigBoxReward;
-        _rewardManagerUI.ChoisenCardReward -= OnChoisenCardRewardView;
+        _rewardManagerUI.ChoisenCardsReward -= OnChoisenCardRewardView;
         _rewardManagerUI.MovedWaitBigBoxReward -= OnMovedWaitBigBoxReward;
     }
 
@@ -123,14 +124,14 @@ public class GamePlayManagerUI : MonoBehaviour
 
     public void ChangeExperience(int experience) => _rewardManagerUI.ChangeExperience(experience);
 
-    private void OnChoisenCardRewardView(Item item)
+    private void OnChoisenCardRewardView(List<Item> items)
     {
         _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
 
-        ChoisenCardReward?.Invoke(item);
+        for (int i = 0; i < items.Count; i++) { ChoisenCardReward?.Invoke(items[i]); }
 
         StartCoroutine(ShowWinPanel(false));
-        TryUseTutorialShop(item);
+        TryUseTutorialShop(items[0]);
     }
 
     private void OnCloudsFilledScene() => CannedShowNextLevel?.Invoke();

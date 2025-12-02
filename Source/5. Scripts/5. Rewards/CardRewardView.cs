@@ -5,13 +5,16 @@ using UnityEngine.UI;
 public class CardRewardView : MonoBehaviour
 {
     [SerializeField] private Button _buttonCard;
+    [SerializeField] private Image _imageShowAd;
     [SerializeField] private Image _cardCloseImage;
     [SerializeField] private Image _cardOpenImage;
     [SerializeField] private Image _cardRewardImage;
 
     private Item _item;
+    private bool _isBonusAd;
 
     public Item Item => _item;
+    public bool IsBonusAd => _isBonusAd;
 
     public event UnityAction<CardRewardView> ClickedButtonCard;
 
@@ -23,6 +26,12 @@ public class CardRewardView : MonoBehaviour
     {
         _item = itme;
         _cardRewardImage.sprite = _item.SpriteItem;
+    }
+
+    public void ShowActivateAd(bool isShow)
+    {
+        _isBonusAd = isShow;
+        _imageShowAd.gameObject.SetActive(isShow);
     }
 
     public void BlockButton(bool isBlock)
