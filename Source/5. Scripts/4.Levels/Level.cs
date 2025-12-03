@@ -26,12 +26,16 @@ public class Level : MonoBehaviour
 
     public void SetValue(bool isCompleted)
     {
-        _starLevel.SetValue();
+        _starLevel.SetValue(isCompleted);
 
         _isCompleted = isCompleted;
     }
 
-    public void CompleteLevel() => _isCompleted = true;
+    public void CompleteLevel()
+    {
+        _isCompleted = true;
+        _starLevel.SetActivateShineStar(_isCompleted);
+    }
 
     public void UpdateLevel()
     {

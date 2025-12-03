@@ -126,17 +126,30 @@ public class GamePlayManager : MonoBehaviour
     private void OnCompletedLevel()
     {
         if (!_levelManager.CurrentLevel.IsCompleted)
+        {
             _saveGame.SaveCompleteLevel(_levelManager.CurrentLevel.Number);
+            _saveGame.SaveExperience(_levelManager.Experience);
+        }
+
+        if(_levelManager.CurrentLevel.Number == _levelManager.CountLevels - 1 && !_isCompleteLevels)
+            _saveGame.SaveCompleteAllLevels(true);
 
         _levelManager.ChangeNextLevel();
-        _saveGame.SaveExperience(_levelManager.Experience);
         _saveGame.SaveNewLevel(_levelManager.NewLevel.Number);
     }
 
     private void OnCompletedFinishLevel()
     {
-        if (!_isCompleteLevels)
-            CompletedOnceLevels?.Invoke();
+        if (_isCompleteLevels)
+            return;
+
+        for (int i = 0; i < _allItems.Count; i++)
+        {
+            _saveGame.SaveIdOpenedItem(_allItems[i].Id);
+        }
+
+        _isCompleteLevels = true;
+        CompletedOnceLevels?.Invoke();
     }
 
     private void OnActivatedLevel(float stepHorizontal, float stepVertical, Vector3 startPosition, bool isRightDirection)
@@ -197,6 +210,12 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnTouchedStarLevel()
     {
+        if (_levelManager.CurrentLevel.IsCompleted)
+        {
+            _gamePlayManagerUI.EndLevel(false);
+            return;
+        }
+
         ChangeExperience(_levelManager.CurrentLevel.CountExperience);
 
         bool isActivateReward = _levelManager.Experience >= _maxExperience && _player.Items.Count < _allItems.Count;

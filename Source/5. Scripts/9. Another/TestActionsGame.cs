@@ -37,7 +37,7 @@ public class TestActionsGame : MonoBehaviour
 
         for (int i = levelsManager.CurrentLevel.Number; i < levelsManager.CountLevels; i++)
         {
-            saveGame.SaveCompleteLevel(i);
+            saveGame.SaveCompleteLevel(i+1);
         }
 
         SceneManager.LoadScene(0);

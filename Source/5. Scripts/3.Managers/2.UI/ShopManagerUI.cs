@@ -21,7 +21,6 @@ public class ShopManagerUI : MonoBehaviour
 
     public event UnityAction<Item, Item> ChangedSelectedItem;
     public event UnityAction ClickedButtonShowScrollView;
-    public event UnityAction ClickedButtonHideScrollView;
     public event UnityAction<int> ChangedGroundAvatar;
 
     #region ----- Initialize ------

@@ -66,12 +66,15 @@ public class IslandController : MonoBehaviour
         Sprite sprite = null;
         int number = level.Number;
         bool isUnlock = level.IsCompleted;
-        bool isShowNumber = (level.LevelType == LevelInfo.LevelType.Regular || level.LevelType == LevelInfo.LevelType.FisrtBonus) && isUnlock
-                            ? true : false;
+        bool isShowNumber = ((level.LevelType == LevelInfo.LevelType.Regular 
+                            || level.LevelType == LevelInfo.LevelType.FisrtBonus) 
+                            || level.LevelType == LevelInfo.LevelType.Final) 
+                            && isUnlock ? true : false;
 
         switch (level.LevelType)
         {
             case LevelInfo.LevelType.Regular:
+            case LevelInfo.LevelType.Final:
                 sprite = isUnlock ? _spriteRegular : _spriteLockedRegular;
                 GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
                 break;
@@ -85,10 +88,6 @@ public class IslandController : MonoBehaviour
                 break;
             case LevelInfo.LevelType.FisrtKey:
                 sprite = isUnlock ? _spriteKey : _spriteKeyLocked;
-                GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
-                break;
-            case LevelInfo.LevelType.Final:
-                sprite = isUnlock ? _spriteRegular : _spriteLockedRegular;
                 GetIslandByNumber(number).Render(sprite, isUnlock, isShowNumber);
                 break;
             case LevelInfo.LevelType.Bonus:

@@ -10,6 +10,7 @@ public class RewardManagerUI : MonoBehaviour
     [SerializeField] private RewardScale _rewardScale;
     [SerializeField] private CardRewardView _cardRewardView;
     [SerializeField] private RewardBoxes _rewardBoxes;
+    [SerializeField] private AdScale _adScale;
     [Space]
     [SerializeField] private GameObject _templateSpawnCard;
     [SerializeField] private List<Transform> _placesCardReward;
@@ -191,10 +192,14 @@ public class RewardManagerUI : MonoBehaviour
     private IEnumerator WaitCloseBoxCardsReward(bool isUseAd)
     {
         if (!isUseAd)
+        {
+            _adScale.ActivateScale(true, _delayChoiseCardAd);
             yield return new WaitForSeconds(_delayChoiseCardAd);
+        }
 
         ResetCardViews();
         _rewardBoxes.HideRewards(_durationChangeScaleRewardBox);
+        _adScale.ActivateScale(false, 0);
 
         ChoisenCardsReward?.Invoke(_choosenItems);
     }

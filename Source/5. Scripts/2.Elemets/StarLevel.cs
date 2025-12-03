@@ -18,6 +18,7 @@ public class StarLevel : GameElement
 
     private SpriteRenderer _spriteStar;
     private Vector3 _startPosition;
+    private bool _isActivateShine;
     private List<Vector3> _postitionsPiecesStar = new List<Vector3>();
     private List<Vector3> _scalesPiecesStar = new List<Vector3>();
 
@@ -32,7 +33,7 @@ public class StarLevel : GameElement
         DOTween.Kill(this);
     }
 
-    public void SetValue()
+    public void SetValue(bool isHideShine)
     {
         _spriteStar = GetComponent<SpriteRenderer>();
         _startPosition = transform.position;
@@ -42,26 +43,42 @@ public class StarLevel : GameElement
             _postitionsPiecesStar.Add(_piecesStar[i].transform.position);
             _scalesPiecesStar.Add(_piecesStar[i].transform.localScale);
             _piecesStar[i].transform.position = Vector3.zero;
+            _piecesStar[i].gameObject.SetActive(false);
         }
+
+        SetActivateShineStar(isHideShine);
+    }
+
+    public void SetActivateShineStar(bool isHideShine)
+    {
+        _isActivateShine = !isHideShine;
+        ShowShineStar(false);
     }
 
     public void Activate()
     {
         ShowShineStar(false);
+        ShowStar(false);
+
+        if (!_isActivateShine)
+            return;
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
+            _piecesStar[i].gameObject.SetActive(true);
             MovePiece(_piecesStar[i], _postitionsPiecesStar[i]);
         }
     }
 
     public void ResetStar()
     {
-        ShowShineStar(true);   
+        ShowShineStar(_isActivateShine);
+        ShowStar(true);
         TryActivateLock(true);
 
         for (int i = 0; i < _piecesStar.Count; i++)
         {
+            _piecesStar[i].gameObject.SetActive(false);
             _piecesStar[i].transform.localScale = _scalesPiecesStar[i];
             _piecesStar[i].transform.localPosition = Vector3.zero;
         }
@@ -80,8 +97,14 @@ public class StarLevel : GameElement
     {
         int alphaColor = isShow ? 1 : 0;
 
-        _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, alphaColor);
         _shine.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, alphaColor);
+    }
+
+    private void ShowStar(bool isShow)
+    {
+        int alphaColor = isShow ? 1 : 0;
+
+        _spriteStar.color = new Color(_spriteStar.color.r, _spriteStar.color.g, _spriteStar.color.b, alphaColor);
     }
 
     private void TryActivateLock(bool isActivate)

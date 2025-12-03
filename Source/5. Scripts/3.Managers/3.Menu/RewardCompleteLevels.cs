@@ -26,7 +26,6 @@ public class RewardCompleteLevels : MonoBehaviour
     {
         OpenFinishReward();
 
-        _textReward.text = "Спасибо! \nМы очень рады и благодарны что вы выбрали нашу игру. Надеемся вы или ваш ребенок получил удовольствие при прохождении игры:) \nВы можете поддержать нас купив отключение рекламы, оставив положительный отзыв или поделившись игрой с друзьями;)";
         _panelReward.gameObject.SetActive(true);
         _scrollbarCrossRoad.value = 1;
     }

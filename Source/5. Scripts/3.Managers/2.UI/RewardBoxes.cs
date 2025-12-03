@@ -47,7 +47,7 @@ public class RewardBoxes : MonoBehaviour
 
         _endScaleBigRewardBox = _bigBoxReward.transform.localScale;
 
-        Vector2 positionBoxRewardInUI = RectTransformUtility.WorldToScreenPoint(null, _boxRewardButton.transform.position);
+        Vector2 positionBoxRewardInUI = RectTransformUtility.WorldToScreenPoint(null, _boxRewardButton.transform.position); //Работает, если при старте игры КанвасГейм включен
         PositionBoxReward = Camera.main.ScreenToWorldPoint(new Vector3(positionBoxRewardInUI.x, positionBoxRewardInUI.y, Camera.main.nearClipPlane));
     }
 
