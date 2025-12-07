@@ -7,6 +7,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private IslandController _islandController;
     [SerializeField] private RewardCompleteLevels _rewardCompleteLevels;
     [SerializeField] private MenuManagerUI _menuManagerUI;
+    [SerializeField] private ADScontroller _adsController;
 
     private Player _player;
     private SoundManager _soundManager;
@@ -21,6 +22,7 @@ public class MenuManager : MonoBehaviour
         _menuManagerUI.ClickedButtonPlay += OnClickedButtonPlay;
         _menuManagerUI.ClickedButtonSounds += OnClickedButtonSounds;
         _islandController.ClickedIsland += OnClickedIsland;
+        _adsController.ClickedBuyAds += OnClickedBuyAds;
     }
 
     private void OnDisable()
@@ -28,6 +30,7 @@ public class MenuManager : MonoBehaviour
         _menuManagerUI.ClickedButtonPlay -= OnClickedButtonPlay;
         _menuManagerUI.ClickedButtonSounds -= OnClickedButtonSounds;
         _islandController.ClickedIsland -= OnClickedIsland;
+        _adsController.ClickedBuyAds -= OnClickedBuyAds;
     }
 
     public void SetBaseValues(Player player, SoundManager soundManager, SaveGame saveGame)
@@ -35,6 +38,9 @@ public class MenuManager : MonoBehaviour
         _soundManager = soundManager;
         _saveGame = saveGame;
         _player = player;
+
+        _menuManagerUI.SetBaseValues(soundManager);
+        _adsController.SetBaseValues(soundManager);
     }
 
     public void SetLoadingValues(List<Level> levels, Level newLevel, bool isCompleteLevels)
@@ -61,7 +67,6 @@ public class MenuManager : MonoBehaviour
 
     private void OnClickedButtonPlay()
     {
-        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
         ClickedButtonPlayGame?.Invoke(_currentNumberLevel);
     }
 
@@ -69,6 +74,11 @@ public class MenuManager : MonoBehaviour
     {
         _currentNumberLevel = currentNumberLevel;
         OnClickedButtonPlay();
+    }
+
+    private void OnClickedBuyAds()
+    {
+
     }
 
     private void OnClickedButtonSounds(bool isOn, bool isMusics)

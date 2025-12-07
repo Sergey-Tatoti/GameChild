@@ -32,6 +32,7 @@ public class MainManager : MonoBehaviour
         _gamePlayManager.SetBaseValues(_player, _soundManager, _saveGame);
         _menuManager.SetBaseValues(_player, _soundManager, _saveGame);
         _saveGame.LoadAll(this);
+        _soundManager.PlaySound(SoundManager.TypeSound.GameMusic);
 
         SwitchPanels(true);
     }
@@ -59,7 +60,6 @@ public class MainManager : MonoBehaviour
     private void OnClickedPlayGame(int numberLevel)
     {
         _gamePlayManager.PlayGame(numberLevel);
-        _soundManager.PlaySound(SoundManager.TypeSound.GameMusic);
 
         SwitchPanels(false);
     }

@@ -210,6 +210,8 @@ public class GamePlayManager : MonoBehaviour
 
     private void OnTouchedStarLevel()
     {
+        _soundManager.PlaySound(SoundManager.TypeSound.TouchedStar);
+
         if (_levelManager.CurrentLevel.IsCompleted)
         {
             _gamePlayManagerUI.EndLevel(false);
@@ -221,13 +223,12 @@ public class GamePlayManager : MonoBehaviour
         bool isActivateReward = _levelManager.Experience >= _maxExperience && _player.Items.Count < _allItems.Count;
 
         _gamePlayManagerUI.EndLevel(isActivateReward);
-        _soundManager.PlaySound(SoundManager.TypeSound.TouchedStar);
     }
 
     private void OnTouchedStarExperience(int experience)
     {
-        _temporaryExperience = experience;
-        ChangeExperience(_temporaryExperience);
+        _temporaryExperience += experience;
+        ChangeExperience(experience);
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedMiniStar);
     }
 

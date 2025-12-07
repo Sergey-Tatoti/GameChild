@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public enum TypeSound { ClickButton, ClickButtonPlay, ClickItem, OpenRewardBox, MoveRewardBox, SwitchLevel, TouchedStar, 
+    public enum TypeSound { ClickButton, ClickItem, OpenRewardBox, MoveRewardBox, SwitchLevel, TouchedStar, 
                          TouchedHitBox, TouchedMiniStar, TouchedTeleport, TouchedKey, TouchedCloseLock, UseStep, OpenDoor, GameMusic}
 
     [SerializeField] private AudioSource _musicGame;
     [Header("Кнопки")]
     [SerializeField] private AudioSource _soundClickButton;
-    [SerializeField] private AudioSource _soundClickButtonPlay;
     [SerializeField] private AudioSource _soundClickItem;
     [Header("Подарок")]
     [SerializeField] private AudioSource _soundOpenRewardBox;
@@ -44,9 +43,6 @@ public class SoundManager : MonoBehaviour
         {
             case TypeSound.ClickButton:
                 _soundClickButton.Play();
-                break;
-            case TypeSound.ClickButtonPlay:
-                _soundClickButtonPlay.Play();
                 break;
             case TypeSound.ClickItem:
                 _soundClickItem.Play();

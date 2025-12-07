@@ -17,6 +17,7 @@ public class MenuManagerUI : MonoBehaviour
     [SerializeField] private Sprite _spriteButtonOnMusics;
     [SerializeField] private Sprite _spriteButtonOffMusics;
 
+    private SoundManager _soundManager;
     private bool _isOnSounds = true;
     private bool _isOnMusics = true;
     private bool _isMusics = true;
@@ -42,10 +43,17 @@ public class MenuManagerUI : MonoBehaviour
         _buttonMusics.onClick.RemoveListener(ClickedButtonMusic);
     }
 
-    public void ShowPanelCrossRoad(bool isShow) => _panelCrossRoad.SetActive(isShow);
+    public void SetBaseValues(SoundManager soundManager) => _soundManager = soundManager;
+
+    public void ShowPanelCrossRoad(bool isShow)
+    {
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
+        _panelCrossRoad.SetActive(isShow);
+    }
 
     private void ClickedButtonPlayGame()
     {
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
         ClickedButtonPlay?.Invoke();
         ShowPanelCrossRoad(true);
     }

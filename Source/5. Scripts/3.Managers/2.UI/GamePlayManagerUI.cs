@@ -133,7 +133,11 @@ public class GamePlayManagerUI : MonoBehaviour
         TryUseTutorialShop(items[0]);
     }
 
-    private void OnCloudsFilledScene() => CannedShowNextLevel?.Invoke();
+    private void OnCloudsFilledScene()
+    {
+        _soundManager.PlaySound(SoundManager.TypeSound.SwitchLevel);
+        CannedShowNextLevel?.Invoke();
+    }
 
     private void OnOpenedBigBoxReward() => _soundManager.PlaySound(SoundManager.TypeSound.OpenRewardBox);
 
@@ -186,7 +190,6 @@ public class GamePlayManagerUI : MonoBehaviour
 
         yield return new WaitForSeconds(_timeWaitShowNextLevel);
 
-        _soundManager.PlaySound(SoundManager.TypeSound.SwitchLevel);
         _switchLevelManagerUI.UseSwitchAnimation(isShowSmile);
     }
 
@@ -198,7 +201,7 @@ public class GamePlayManagerUI : MonoBehaviour
 
     private void OnClickedButtonPlay()
     {
-        _soundManager.PlaySound(SoundManager.TypeSound.ClickButtonPlay);
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
 
         if (_stepManagerUI.CountActiveDirections > 0)
         {

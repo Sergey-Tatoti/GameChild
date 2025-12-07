@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ADScontroller : MonoBehaviour
@@ -18,6 +19,10 @@ public class ADScontroller : MonoBehaviour
     [SerializeField] private Button _adsCheckButtonReturn;
     [SerializeField] private TMP_InputField _adsInputField;
     [SerializeField] private string _resultCheck;
+
+    private SoundManager _soundManager;
+
+    public event UnityAction ClickedBuyAds;
 
     private void OnEnable()
     {
@@ -39,21 +44,27 @@ public class ADScontroller : MonoBehaviour
         _adsCheckButtonReturn.onClick.RemoveListener(() => ShowCheckPanel(false));
     }
 
+    public void SetBaseValues(SoundManager soundManager) => _soundManager = soundManager;
+
     private void ShowAdsBuyPanel(bool isShow)
     {
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
         _adsBuyPanel.SetActive(isShow);
     }
 
     private void ShowCheckPanel(bool isShow)
     {
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
         _adsCheckPanel.SetActive(isShow);
     }
 
     private void AttemptBuyAds()
     {
+        _soundManager.PlaySound(SoundManager.TypeSound.ClickButton);
+
         if (_resultCheck == _adsInputField.text)
         {
-
+            ClickedBuyAds?.Invoke();
         }    
     }
 }
