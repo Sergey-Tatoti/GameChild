@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using static Unity.Collections.AllocatorManager;
+using GamePush;
 
 public class RewardManagerUI : MonoBehaviour
 {
@@ -25,6 +25,7 @@ public class RewardManagerUI : MonoBehaviour
     [Tooltip("Задержка после выбора карты, чтобы выбрать доп приз")][SerializeField] private float _delayChoiseCardAd;
 
     private List<CardRewardView> _cardRewardViews = new List<CardRewardView>();
+    private CardRewardView _tempCardRewardView;
     private List<Item> _closedItems = new List<Item>();
     private List<Item> _choosenItems = new List<Item>();
     private int _countReward;
@@ -37,12 +38,14 @@ public class RewardManagerUI : MonoBehaviour
     {
         _rewardBoxes.ClickedBigBoxReward += OnClickedBigBoxReward;
         _rewardBoxes.PlayedAnimationBigBoxReward += OnPlayedAnimationBigBoxReward;
+        GP_Ads.OnRewardedReward += OnShowedRewarded;
     }
 
     private void OnDisable()
     {
         _rewardBoxes.ClickedBigBoxReward -= OnClickedBigBoxReward;
         _rewardBoxes.PlayedAnimationBigBoxReward -= OnPlayedAnimationBigBoxReward;
+        GP_Ads.OnRewardedReward -= OnShowedRewarded;
     }
 
     public void SetValue(List<Item> items, int experience)
@@ -143,17 +146,37 @@ public class RewardManagerUI : MonoBehaviour
 
     private void OnClickedButtonCard(CardRewardView cardRewardView)
     {
+        _tempCardRewardView = cardRewardView;
+
         if (cardRewardView.IsBonusAd)
         {
-            Debug.Log("SHOW AD");
+            if (!MainManager.IsBuyedAds)
+                GP_Ads.ShowRewarded();
+            else
+                OnShowedRewarded(null);
+
+            return;
         }
 
+        if (cardRewardView.IsBonusAd)
+            return;
+
         _rewardScale.SetScale(0);
-        _closedItems.Remove(cardRewardView.Item);
+        _closedItems.Remove(_tempCardRewardView.Item);
 
         BlockCloseCardsReward(true);
         StopAllCoroutines();
-        StartCoroutine(WaitShowCardView(cardRewardView));
+        StartCoroutine(WaitShowCardView(_tempCardRewardView));
+    }
+
+    private void OnShowedRewarded(string nameReward)
+    {
+        _rewardScale.SetScale(0);
+        _closedItems.Remove(_tempCardRewardView.Item);
+
+        BlockCloseCardsReward(true);
+        StopAllCoroutines();
+        StartCoroutine(WaitShowCardView(_tempCardRewardView));
     }
 
     private void ResetCardViews()

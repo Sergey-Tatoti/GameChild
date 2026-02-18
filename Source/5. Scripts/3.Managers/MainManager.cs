@@ -1,9 +1,12 @@
+using GamePush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MainManager : MonoBehaviour
 {
+    public static bool IsBuyedAds;
+
     [SerializeField] private MenuManager _menuManager;
     [SerializeField] private GamePlayManager _gamePlayManager;
     [SerializeField] private SoundManager _soundManager;
@@ -38,9 +41,10 @@ public class MainManager : MonoBehaviour
     }
 
     public void SetLoadingValues(int experience, List<int> numbersCompleteLevels, int numberNewLevel, List<int> openedIdItems,
-                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar, bool isCompleteLevels)
+                                 List<int> selectedIdItems, List<int> showedIdItems, int indexGroundAvatar, bool isCompleteLevels, bool isBuyedAds)
     {
-        _gamePlayManager.SetLoadingValues(experience, numbersCompleteLevels, numberNewLevel, openedIdItems, selectedIdItems, showedIdItems, 
+        IsBuyedAds = isBuyedAds;
+        _gamePlayManager.SetLoadingValues(experience, numbersCompleteLevels, numberNewLevel, openedIdItems, selectedIdItems, showedIdItems,
                                           indexGroundAvatar, isCompleteLevels);
         _menuManager.SetLoadingValues(_gamePlayManager.Levels, _gamePlayManager.NewLevel, isCompleteLevels);
     }

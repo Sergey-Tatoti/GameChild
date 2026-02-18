@@ -25,6 +25,8 @@ public class SaveGame : MonoBehaviour
 
     public void SaveCompleteAllLevels(bool isComplete) => SaveManager.Save(SaveKey, GetSaveCompleteLevelsSnapshot(isComplete));
 
+    public void SaveBuyAds() => SaveManager.Save(SaveKey, GetSaveBuyAdsSnapshot());
+
     SaveData.GameData GetSaveExperienceSnapshot(int experience) { _data.Experience = experience; return _data; }
 
     SaveData.GameData GetSaveNewLevelSnapshot(int numberLevel) { _data.NumberNewLevel = numberLevel; return _data; }
@@ -41,6 +43,8 @@ public class SaveGame : MonoBehaviour
 
     SaveData.GameData GetSaveCompleteLevelsSnapshot(bool isComplete) { _data.IsCompleteLevels = isComplete; return _data; }
 
+    SaveData.GameData GetSaveBuyAdsSnapshot() { _data.IsBuyedAds = true; return _data; }
+
     #endregion
 
     #region LoadeAll
@@ -49,7 +53,7 @@ public class SaveGame : MonoBehaviour
         _data = SaveManager.Load<SaveData.GameData>(SaveKey);
 
         mainManager.SetLoadingValues(_data.Experience, _data.NumbersCompleteLevels, _data.NumberNewLevel, _data.IdOpenItems, 
-                                     _data.IdSelectedItems, _data.IdShowedItems, _data.IndexGroundAvatar, _data.IsCompleteLevels);
+                                     _data.IdSelectedItems, _data.IdShowedItems, _data.IndexGroundAvatar, _data.IsCompleteLevels, _data.IsBuyedAds);
     }
     #endregion
 }

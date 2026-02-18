@@ -1,3 +1,4 @@
+using GamePush;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -249,6 +250,9 @@ public class GamePlayManagerUI : MonoBehaviour
         OnClickedButton();
         TurnTutorial(true);
         TryUseTutorialSteps(_levelNumber);
+
+        if (!MainManager.IsBuyedAds)
+            GP_Ads.ShowRewarded();
 
         _gameButtonManagerUI.ActivateButtonLamp(false);
     }

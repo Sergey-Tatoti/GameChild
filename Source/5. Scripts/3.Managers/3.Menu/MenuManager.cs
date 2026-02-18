@@ -1,3 +1,4 @@
+using GamePush;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,6 +24,7 @@ public class MenuManager : MonoBehaviour
         _menuManagerUI.ClickedButtonSounds += OnClickedButtonSounds;
         _islandController.ClickedIsland += OnClickedIsland;
         _adsController.ClickedBuyAds += OnClickedBuyAds;
+        GP_Payments.OnFetchProducts += OnFetchProducts;
     }
 
     private void OnDisable()
@@ -31,6 +33,7 @@ public class MenuManager : MonoBehaviour
         _menuManagerUI.ClickedButtonSounds -= OnClickedButtonSounds;
         _islandController.ClickedIsland -= OnClickedIsland;
         _adsController.ClickedBuyAds -= OnClickedBuyAds;
+        GP_Payments.OnFetchProducts -= OnFetchProducts;
     }
 
     public void SetBaseValues(Player player, SoundManager soundManager, SaveGame saveGame)
@@ -41,12 +44,14 @@ public class MenuManager : MonoBehaviour
 
         _menuManagerUI.SetBaseValues(soundManager);
         _adsController.SetBaseValues(soundManager);
+        GP_Payments.Fetch();
     }
 
     public void SetLoadingValues(List<Level> levels, Level newLevel, bool isCompleteLevels)
     {
         _currentNumberLevel = newLevel.Number;
         _islandController.RenderAllIslands(levels, newLevel);
+        _adsController.SetLoadingValues(MainManager.IsBuyedAds);
 
         if (isCompleteLevels)
             _rewardCompleteLevels.OpenFinishReward();
@@ -65,6 +70,12 @@ public class MenuManager : MonoBehaviour
         _rewardCompleteLevels.ActivateRewardPanel();
     }
 
+    private void OnFetchProducts(List<FetchProducts> products)
+    {
+        if (products != null)
+            _adsController.SetPrice(products[0].price.ToString());
+    }
+
     private void OnClickedButtonPlay()
     {
         ClickedButtonPlayGame?.Invoke(_currentNumberLevel);
@@ -78,8 +89,17 @@ public class MenuManager : MonoBehaviour
 
     private void OnClickedBuyAds()
     {
-
+        GP_Payments.Purchase("ADS_OFF", OnPurchaseSuccess, OnPurchaseError);
     }
+
+    private void OnPurchaseSuccess(string productName)
+    {
+        MainManager.IsBuyedAds = true;
+        _saveGame.SaveBuyAds();
+        _adsController.SetLoadingValues(true);
+    }
+
+    private void OnPurchaseError() { Debug.Log("Error Buy AdsOFF"); }
 
     private void OnClickedButtonSounds(bool isOn, bool isMusics)
     {
