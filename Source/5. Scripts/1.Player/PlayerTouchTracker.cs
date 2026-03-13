@@ -33,7 +33,7 @@ public class PlayerTouchTracker : MonoBehaviour
 
         if (collision.gameObject.TryGetComponent<StarExperience>(out StarExperience starExperience))
         {
-            collision.gameObject.SetActive(false);
+            starExperience.gameObject.SetActive(false);
             TouchedStarExperience?.Invoke(starExperience.CountExperience);
         }
 

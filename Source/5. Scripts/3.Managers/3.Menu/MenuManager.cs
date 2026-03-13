@@ -72,7 +72,7 @@ public class MenuManager : MonoBehaviour
 
     private void OnFetchProducts(List<FetchProducts> products)
     {
-        if (products != null)
+        if (products != null && products.Count > 0)
             _adsController.SetPrice(products[0].price.ToString());
     }
 
@@ -92,11 +92,12 @@ public class MenuManager : MonoBehaviour
         GP_Payments.Purchase("ADS_OFF", OnPurchaseSuccess, OnPurchaseError);
     }
 
-    private void OnPurchaseSuccess(string productName)
+    public void OnPurchaseSuccess(string productName)
     {
         MainManager.IsBuyedAds = true;
         _saveGame.SaveBuyAds();
         _adsController.SetLoadingValues(true);
+        Debug.Log("Buy Ads");
     }
 
     private void OnPurchaseError() { Debug.Log("Error Buy AdsOFF"); }

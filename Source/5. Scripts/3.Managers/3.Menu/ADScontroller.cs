@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GamePush;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -29,7 +30,7 @@ public class ADScontroller : MonoBehaviour
     {
         _adsButtonMenu.onClick.AddListener(() => ShowAdsBuyPanel(true));
         _adsButtonMap.onClick.AddListener(() => ShowAdsBuyPanel(true));
-        _adsBuyButton.onClick.AddListener(() => ShowCheckPanel(true));
+        _adsBuyButton.onClick.AddListener(AttemptBuyAds);
 
         _adsReturnButton.onClick.AddListener(() => ShowAdsBuyPanel(false));
         _adsCheckButtonBuy.onClick.AddListener(AttemptBuyAds);
@@ -40,7 +41,7 @@ public class ADScontroller : MonoBehaviour
     {
         _adsButtonMenu.onClick.RemoveListener(() => ShowAdsBuyPanel(true));
         _adsButtonMap.onClick.RemoveListener(() => ShowAdsBuyPanel(true));
-        _adsBuyButton.onClick.RemoveListener(() => ShowCheckPanel(true));
+        _adsBuyButton.onClick.RemoveListener(AttemptBuyAds);
 
         _adsReturnButton.onClick.RemoveListener(() => ShowAdsBuyPanel(false));
         _adsCheckButtonBuy.onClick.RemoveListener(AttemptBuyAds);
@@ -49,7 +50,13 @@ public class ADScontroller : MonoBehaviour
 
     public void SetBaseValues(SoundManager soundManager) => _soundManager = soundManager;
 
-    public void SetPrice(string price) => _textPrice.text = price;
+    public void SetPrice(string price)
+    {
+        if (GP_Platform.Type() == Platform.VK)
+            _textPrice.text = price + " гол.";
+        else
+            _textPrice.text = price;
+    }
 
     public void SetLoadingValues(bool isBuyAds)
     {
@@ -79,6 +86,6 @@ public class ADScontroller : MonoBehaviour
         if (_resultCheck == _adsInputField.text)
         {
             ClickedBuyAds?.Invoke();
-        }    
+        }
     }
 }

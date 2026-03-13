@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using GamePush;
 
 public class RewardCompleteLevels : MonoBehaviour
 {
@@ -11,10 +12,17 @@ public class RewardCompleteLevels : MonoBehaviour
     [SerializeField] private Scrollbar _scrollbarCrossRoad;
     [Space]
     [SerializeField] private Vector3 _scaleActivateReward;
+    [SerializeField][TextArea(1, 3)] private string _russianText;
+    [SerializeField][TextArea(1, 3)] private string _englishText;
 
     private void OnEnable()
     {
         _buttonCloseReward.onClick.AddListener(HidePanelReward);
+
+        if(GP_Language.Current() == Language.Russian)
+            _textReward.text = _russianText;
+        else
+            _textReward.text = _englishText;
     }
 
     private void OnDisable()
