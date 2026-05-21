@@ -10,8 +10,8 @@ public class CloudsManager : MonoBehaviour
     private const float MaxDurationMoveClouds = 30f;
     private const float MinDelayClouds = 1;
     private const float MaxDelayClouds = 10;
-    private const float MinScaleClouds = 0.1f;
-    private const float MaxScaleClouds = 1f;
+    private const float MinScaleClouds = 0.01f;
+    private const float MaxScaleClouds = 0.15f;
 
     [SerializeField] private List<Cloud>_clouds;
     [SerializeField] private List<Sprite> _spritesClouds;

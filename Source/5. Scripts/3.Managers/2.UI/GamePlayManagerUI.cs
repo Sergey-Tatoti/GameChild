@@ -252,7 +252,7 @@ public class GamePlayManagerUI : MonoBehaviour
         TryUseTutorialSteps(_levelNumber);
 
         if (!MainManager.IsBuyedAds)
-            GP_Ads.ShowRewarded();
+            GP_Ads.ShowRewarded("Lamp");
 
         _gameButtonManagerUI.ActivateButtonLamp(false);
     }

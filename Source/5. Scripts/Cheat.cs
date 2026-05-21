@@ -16,7 +16,6 @@ public class Cheat : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("work");
         _coroutine = StartCoroutine(TimerGetOffAds());
     }
 

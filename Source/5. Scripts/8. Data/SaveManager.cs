@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using GamePush;
 using UnityEngine;
 
 public static class SaveManager
@@ -8,18 +8,30 @@ public static class SaveManager
         string jsonDataString = JsonUtility.ToJson(saveData, true);
         Debug.Log(jsonDataString);
         PlayerPrefs.SetString(key, jsonDataString);
+        GP_Player.Set(key, jsonDataString);
+        GP_Player.Sync();
     }
 
     public static T Load<T>(string key) where T : new()
     {
-        if (PlayerPrefs.HasKey(key))
+        if (GP_Player.Has(key))
         {
-            string loadedString = PlayerPrefs.GetString(key);
+            string loadedString = GP_Player.GetString(key);
             Debug.Log(loadedString);
-            return JsonUtility.FromJson<T>(loadedString);
+
+            if (!string.IsNullOrEmpty(loadedString) && loadedString.Trim().StartsWith("{"))
+            {
+                return JsonUtility.FromJson<T>(loadedString);
+            }
+            else
+            {
+                Debug.LogWarning($"[GamePush Load] Найдена пустая или битая строка для ключа {key}. Создаем новый объект.");
+                return new T();
+            }
         }
         else
         {
+            Debug.Log($"[GamePush Load] Key {key} not found. Creating new instance.");
             return new T();
         }
     }

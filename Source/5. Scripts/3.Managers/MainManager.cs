@@ -32,12 +32,15 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
+        SwitchPanels(true);
         _gamePlayManager.SetBaseValues(_player, _soundManager, _saveGame);
         _menuManager.SetBaseValues(_player, _soundManager, _saveGame);
-        _saveGame.LoadAll(this);
         _soundManager.PlaySound(SoundManager.TypeSound.GameMusic);
 
-        SwitchPanels(true);
+        if (GP_Init.isReady)
+            InitializeGame();
+        else
+            GP_Init.OnReady += OnGamePushReady;
     }
 
     public void SetLoadingValues(int experience, List<int> numbersCompleteLevels, int numberNewLevel, List<int> openedIdItems,
@@ -48,6 +51,14 @@ public class MainManager : MonoBehaviour
                                           indexGroundAvatar, isCompleteLevels);
         _menuManager.SetLoadingValues(_gamePlayManager.Levels, _gamePlayManager.NewLevel, isCompleteLevels);
     }
+
+    private void OnGamePushReady()
+    {
+        GP_Init.OnReady -= OnGamePushReady;
+        InitializeGame();
+    }
+
+    private void InitializeGame() => _saveGame.LoadAll(this);
 
     private void OnClickedBackMenu()
     {

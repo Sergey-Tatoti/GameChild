@@ -171,6 +171,9 @@ public class RewardManagerUI : MonoBehaviour
 
     private void OnShowedRewarded(string nameReward)
     {
+        if (nameReward == "Lamp")
+            return;
+
         _rewardScale.SetScale(0);
         _closedItems.Remove(_tempCardRewardView.Item);
 
