@@ -8,7 +8,7 @@ public class GamePlayManager : MonoBehaviour
     [SerializeField] private LevelsManager _levelManager;
     [SerializeField] private ShopManager _shopManager;
     [SerializeField] private CloudsManager _cloudsManager;
-    [SerializeField] public List<Item> _allItems; // public для тестов
+    [SerializeField] public List<Item> _allItems; // public пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     [SerializeField] private List<Tutorial> _tutorials;
 
     public List<Level> Levels;
@@ -211,6 +211,7 @@ public class GamePlayManager : MonoBehaviour
     private void OnTouchedStarLevel()
     {
         _soundManager.PlaySound(SoundManager.TypeSound.TouchedStar);
+        _temporaryExperience = 0;
 
         if (_levelManager.CurrentLevel.IsCompleted)
         {

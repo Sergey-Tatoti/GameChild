@@ -7,7 +7,7 @@ public static class SaveManager
     {
         string jsonDataString = JsonUtility.ToJson(saveData, true);
         Debug.Log(jsonDataString);
-        PlayerPrefs.SetString(key, jsonDataString);
+        //PlayerPrefs.SetString(key, jsonDataString);
         GP_Player.Set(key, jsonDataString);
         GP_Player.Sync();
     }
@@ -25,7 +25,7 @@ public static class SaveManager
             }
             else
             {
-                Debug.LogWarning($"[GamePush Load] Найдена пустая или битая строка для ключа {key}. Создаем новый объект.");
+                Debug.LogWarning($"[GamePush Load] пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ {key}. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.");
                 return new T();
             }
         }
